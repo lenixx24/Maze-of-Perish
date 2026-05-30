@@ -110,7 +110,24 @@ public class GameWindow {
         bottomDivider.startYProperty().bind(gameArea.heightProperty().subtract(config.bottomPanelHeight()));
         bottomDivider.endYProperty().bind(gameArea.heightProperty().subtract(config.bottomPanelHeight()));
 
-        gameArea.getChildren().addAll(topDivider, bottomDivider);
+        GameMapView mapView = new GameMapView();
+
+        mapView.layoutXProperty().bind(
+                gameArea.widthProperty()
+                        .subtract(mapView.prefWidth(-1))
+                        .divide(2)
+        );
+
+        mapView.layoutYProperty().bind(
+                gameArea.heightProperty()
+                        .subtract(config.topPanelHeight())
+                        .subtract(config.bottomPanelHeight())
+                        .subtract(mapView.prefHeight(-1))
+                        .divide(2)
+                        .add(config.topPanelHeight())
+        );
+
+        gameArea.getChildren().addAll(mapView, topDivider, bottomDivider);
         return gameArea;
     }
 
