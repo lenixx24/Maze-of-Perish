@@ -1,4 +1,4 @@
-package ua.edu.ukma.model;
+package ua.edu.ukma.model.defense;
 
 import ua.edu.ukma.annotation.DefenseTexture;
 import java.lang.reflect.Field;

@@ -1,4 +1,4 @@
-package ua.edu.ukma.model;
+package ua.edu.ukma.model.defense;
 
 public class DefenseStructure {
     private final int row;
