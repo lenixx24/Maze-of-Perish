@@ -3,11 +3,12 @@ package ua.edu.ukma.entity;
 import javafx.scene.canvas.GraphicsContext;
 
 public class Enemy extends Entity {
-    private final String enemyType; // "Wanderer", "Monolith" or "Ram"
+    private final int enemyType; // 0-"Wanderer", 1-"Monolith", 2-"Ram"
 
-    public Enemy(double startX, double startY, double speed, int maxHealth, String type) {
+    public Enemy(double startX, double startY, double speed, int maxHealth, int type, String spriteSheetPath) {
         super(startX, startY, speed, maxHealth);
         this.enemyType = type;
+        loadSpriteSheet(spriteSheetPath);
     }
 
     @Override

@@ -1,5 +1,9 @@
 package ua.edu.ukma.entity;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.util.Objects;
 
 public abstract class Entity {
     protected double x;
@@ -8,6 +12,8 @@ public abstract class Entity {
     protected int health;
     protected int maxHealth;
     protected boolean active;
+    protected ImageView imageView;
+    protected SpriteAnimation currentAnimation;
     public Entity(double x, double y, double speed, int maxHealth) {
         this.x = x;
         this.y = y;
@@ -29,9 +35,13 @@ public abstract class Entity {
             onDeath();
         }
     }
-
+protected void loadSpriteSheet(String path){
+    Image spriteSheet = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path)));
+    this.imageView = new ImageView(spriteSheet);
+    this.imageView.setX(0);
+    this.imageView.setY(0);
+}
     protected void onDeath() {
-        // Базова логіка деактивації сутності
         this.active = false;
     }
 
