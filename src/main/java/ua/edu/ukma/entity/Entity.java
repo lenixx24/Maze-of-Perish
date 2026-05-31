@@ -38,18 +38,18 @@ public abstract class Entity {
 protected void loadSpriteSheet(String path){
     Image spriteSheet = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path)));
     this.imageView = new ImageView(spriteSheet);
-    this.imageView.setX(0);
-    this.imageView.setY(0);
+    this.imageView.setX(x);
+    this.imageView.setY(y);
 }
     protected void onDeath() {
         this.active = false;
     }
 
-    public int getGridX(int tileSize) {
+    public int getCol(int tileSize) {
         return (int) ((x + tileSize / 2.0) / tileSize);
     }
 
-    public int getGridY(int tileSize) {
+    public int getRow(int tileSize) {
         return (int) ((y + tileSize / 2.0) / tileSize);
     }
 
@@ -71,4 +71,8 @@ protected void loadSpriteSheet(String path){
     public int getMaxHealth() { return maxHealth; }
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
+
+    public ImageView getImageView() {
+        return imageView;
+    }
 }

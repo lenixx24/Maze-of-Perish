@@ -2,6 +2,7 @@ package ua.edu.ukma.ui;
 
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import ua.edu.ukma.entity.enemy.Wanderer;
 import ua.edu.ukma.map.MazeFactory;
 import ua.edu.ukma.model.GameMap;
 import ua.edu.ukma.renderer.Renderer;
@@ -24,5 +25,6 @@ public class GameMapView extends Pane {
         getChildren().add(mapNode);
 
         setPrefSize(mapNode.prefWidth(-1), mapNode.prefHeight(-1));
+        getChildren().add(new Wanderer(20, 20).getImageView()); //for testing
     }
 }

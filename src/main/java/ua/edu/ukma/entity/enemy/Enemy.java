@@ -1,6 +1,7 @@
-package ua.edu.ukma.entity;
+package ua.edu.ukma.entity.enemy;
 
 import javafx.scene.canvas.GraphicsContext;
+import ua.edu.ukma.entity.Entity;
 
 public class Enemy extends Entity {
     private final int enemyType; // 0-"Wanderer", 1-"Monolith", 2-"Ram"
