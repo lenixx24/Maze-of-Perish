@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import ua.edu.ukma.config.GameScaleConfig;
+import ua.edu.ukma.entity.enemy.EnemyManager;
 import ua.edu.ukma.entity.player.Direction;
 import ua.edu.ukma.entity.player.Player;
 import ua.edu.ukma.model.CellPosition;
@@ -28,6 +29,7 @@ public class GameMapView extends Pane {
     private final DefenseController defenseController;
     private final DefenseRenderer defenseRenderer;
 
+    private final EnemyManager enemyManager;
     private final Map<KeyCode, Direction> controls = Map.of(
             KeyCode.A, Direction.LEFT,
             KeyCode.LEFT, Direction.LEFT,
@@ -49,6 +51,7 @@ public class GameMapView extends Pane {
         this.defenseManager = new DefenseManager();
         this.defenseController = new DefenseController();
         this.defenseRenderer = new DefenseRenderer(this);
+        this.enemyManager=new EnemyManager(this);
         TileMapRenderer renderer = new TileMapRenderer(tileSize);
         Node mapNode = renderer.render(gameMap);
 
@@ -96,7 +99,7 @@ public class GameMapView extends Pane {
             public void handle(long now) {
                 player.update();
                 player.updateAnimation(now);
-
+                enemyManager.update();
                 int size = GameScaleConfig.calculateTileSize(gameMap.rows(), gameMap.cols(), getWidth(), getHeight());
                 defenseRenderer.render(defenseManager, size);
                 player.getView().toFront();

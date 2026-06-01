@@ -2,6 +2,7 @@ package ua.edu.ukma.entity;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import ua.edu.ukma.config.GameScaleConfig;
 
 import java.util.Objects;
 
@@ -23,7 +24,7 @@ public abstract class Entity {
         this.active = true;
     }
     public abstract void update();
-    public abstract void render(GraphicsContext gc);
+    public abstract void render();
 
     public void takeDamage(int amount) {
         if (!active) return;
@@ -40,6 +41,8 @@ protected void loadSpriteSheet(String path){
     this.imageView = new ImageView(spriteSheet);
     this.imageView.setX(x);
     this.imageView.setY(y);
+    imageView.setFitWidth(64);
+    imageView.setFitHeight(64);
 }
     protected void onDeath() {
         this.active = false;

@@ -120,7 +120,7 @@ public class Player extends Entity {
     }
 
     @Override
-    public void render(GraphicsContext gc) {
+    public void render() {
     }
 
     private void setWalkingFrame() {

@@ -4,10 +4,11 @@ import javafx.animation.Animation;
 import javafx.util.Duration;
 import ua.edu.ukma.entity.SpriteAnimation;
 
-public class Wanderer extends Enemy {
+public class Ram extends Enemy {
 
-    public Wanderer(double startX, double startY) {
-        super(startX, startY, 1.5, 100, 0, "/enemies/wanderer.png");
+
+    public Ram(double startX, double startY) {
+        super(startX, startY, 0.5, 300, 2, "/enemies/ram.png");
         loadAnimations();
         playAnimation(walkAnimation);
     }
@@ -26,8 +27,9 @@ public class Wanderer extends Enemy {
     }
 
 
+
     @Override
     public void update() {
-       super.update();
+        super.update();
     }
 }
