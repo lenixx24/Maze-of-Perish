@@ -31,6 +31,12 @@
             <version>${javafx.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
         <!-- Optional: media/sound support -->
         <dependency>
             <groupId>org.openjfx</groupId>
