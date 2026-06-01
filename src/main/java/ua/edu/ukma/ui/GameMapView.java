@@ -4,11 +4,14 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import ua.edu.ukma.config.GameScaleConfig;
 import ua.edu.ukma.entity.player.Direction;
 import ua.edu.ukma.entity.player.Player;
 import ua.edu.ukma.model.CellPosition;
 import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
+import ua.edu.ukma.model.defense.DefenseManager;
+import ua.edu.ukma.renderer.DefenseRenderer;
 import ua.edu.ukma.renderer.TileMapRenderer;
 
 import java.util.Map;
@@ -20,6 +23,10 @@ public class GameMapView extends Pane {
 
     private final GameMap gameMap;
     private final Player player;
+
+    private final DefenseManager defenseManager;
+    private final DefenseController defenseController;
+    private final DefenseRenderer defenseRenderer;
 
     private final Map<KeyCode, Direction> controls = Map.of(
             KeyCode.A, Direction.LEFT,
@@ -39,6 +46,9 @@ public class GameMapView extends Pane {
         this.gameMap = gameMap;
         this.tileSize = tileSize;
 
+        this.defenseManager = new DefenseManager();
+        this.defenseController = new DefenseController();
+        this.defenseRenderer = new DefenseRenderer(this);
         TileMapRenderer renderer = new TileMapRenderer(tileSize);
         Node mapNode = renderer.render(gameMap);
 
@@ -67,10 +77,15 @@ public class GameMapView extends Pane {
             }
         });
 
-        setOnMouseClicked(event -> requestFocus());
+        setOnMouseClicked(event -> {
+            requestFocus();
+            defenseController.buildDefense(event.getX(), event.getY(), getWidth(), getHeight(), gameMap, defenseManager, player);
+        });
 
-        setOnKeyPressed(event -> Optional.ofNullable(controls.get(event.getCode()))
-                .ifPresent(player::move));
+        setOnKeyPressed(event -> {
+            Optional.ofNullable(controls.get(event.getCode())).ifPresent(player::move);
+            defenseController.handle(event.getCode());
+        });
 
         startGameLoop();
     }
@@ -81,6 +96,10 @@ public class GameMapView extends Pane {
             public void handle(long now) {
                 player.update();
                 player.updateAnimation(now);
+
+                int size = GameScaleConfig.calculateTileSize(gameMap.rows(), gameMap.cols(), getWidth(), getHeight());
+                defenseRenderer.render(defenseManager, size);
+                player.getView().toFront();
             }
         };
 
