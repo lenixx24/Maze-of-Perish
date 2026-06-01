@@ -1,30 +1,89 @@
 package ua.edu.ukma.ui;
 
+import javafx.animation.AnimationTimer;
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import ua.edu.ukma.entity.enemy.Wanderer;
-import ua.edu.ukma.map.MazeFactory;
+import ua.edu.ukma.entity.player.Direction;
+import ua.edu.ukma.entity.player.Player;
+import ua.edu.ukma.model.CellPosition;
+import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
-import ua.edu.ukma.renderer.Renderer;
 import ua.edu.ukma.renderer.TileMapRenderer;
+
+import java.util.Map;
+import java.util.Optional;
 
 public class GameMapView extends Pane {
 
+    private final int tileSize;
+
     private final GameMap gameMap;
-    private final Renderer<GameMap> renderer;
+    private final Player player;
 
-    public GameMapView() {
-        this.gameMap = MazeFactory.createDefaultMaze();
-        this.renderer = new TileMapRenderer();
+    private final Map<KeyCode, Direction> controls = Map.of(
+            KeyCode.A, Direction.LEFT,
+            KeyCode.LEFT, Direction.LEFT,
 
-        draw();
+            KeyCode.D, Direction.RIGHT,
+            KeyCode.RIGHT, Direction.RIGHT,
+
+            KeyCode.W, Direction.UP,
+            KeyCode.UP, Direction.UP,
+
+            KeyCode.S, Direction.DOWN,
+            KeyCode.DOWN, Direction.DOWN
+    );
+
+    public GameMapView(GameMap gameMap, int tileSize) {
+        this.gameMap = gameMap;
+        this.tileSize = tileSize;
+
+        TileMapRenderer renderer = new TileMapRenderer(tileSize);
+        Node mapNode = renderer.render(gameMap);
+
+        CellPosition towerPosition = gameMap.findFirst(CellType.TOWER);
+        CellPosition playerStartPosition = new CellPosition(
+                towerPosition.row() + 1,
+                towerPosition.col()
+        );
+
+        this.player = new Player(
+                playerStartPosition.row(),
+                playerStartPosition.col(),
+                gameMap,
+                tileSize
+        );
+
+        getChildren().addAll(mapNode, player.getView());
+
+        setPrefSize(gameMap.cols() * tileSize, gameMap.rows() * tileSize);
+
+        setFocusTraversable(true);
+
+        sceneProperty().addListener((observable, oldScene, newScene) -> {
+            if (newScene != null) {
+                requestFocus();
+            }
+        });
+
+        setOnMouseClicked(event -> requestFocus());
+
+        setOnKeyPressed(event -> Optional.ofNullable(controls.get(event.getCode()))
+                .ifPresent(player::move));
+
+        startGameLoop();
     }
 
-    private void draw() {
-        Node mapNode = renderer.render(gameMap);
-        getChildren().add(mapNode);
+    private void startGameLoop() {
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                player.update();
+                player.updateAnimation(now);
+            }
+        };
 
-        setPrefSize(mapNode.prefWidth(-1), mapNode.prefHeight(-1));
-        getChildren().add(new Wanderer(20, 20).getImageView()); //for testing
+        timer.start();
     }
 }

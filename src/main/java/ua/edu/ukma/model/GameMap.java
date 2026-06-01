@@ -51,4 +51,16 @@ public class GameMap {
     public boolean isPassable(int row, int col) {
         return isInside(row, col) && getCell(row, col).isPassable();
     }
+
+    public CellPosition findFirst(CellType targetType) {
+        for (int row = 0; row < rows(); row++) {
+            for (int col = 0; col < cols(); col++) {
+                if (cells[row][col] == targetType) {
+                    return new CellPosition(row, col);
+                }
+            }
+        }
+
+        throw new GameMapException("Cell type was not found on map: " + targetType);
+    }
 }
