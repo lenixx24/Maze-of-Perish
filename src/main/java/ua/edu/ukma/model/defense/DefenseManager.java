@@ -31,7 +31,10 @@ public class DefenseManager {
 
         }
     }
-
+    public boolean hasDefense(int row, int col) {
+        return activeDefenses.stream()
+                .anyMatch(d -> d.getRow() == row && d.getCol() == col);
+    }
     public void addDefense(DefenseStructure defense) {
         activeDefenses.add(defense);
     }

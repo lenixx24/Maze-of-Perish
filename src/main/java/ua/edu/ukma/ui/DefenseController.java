@@ -3,9 +3,8 @@ package ua.edu.ukma.ui;
 import javafx.scene.input.KeyCode;
 import ua.edu.ukma.config.GameScaleConfig;
 import ua.edu.ukma.entity.player.Player;
-import ua.edu.ukma.model.GameMap;
-import ua.edu.ukma.model.defense.AttackTower;
-import ua.edu.ukma.model.defense.DefenseManager;
+import ua.edu.ukma.model.*;
+import ua.edu.ukma.model.defense.*;
 import ua.edu.ukma.model.defense.DefenseType;
 
 import java.util.Map;
@@ -62,9 +61,15 @@ public class DefenseController {
         if (!isHorizontalLine && !isVerticalLine) {
             return;
         }
+        if (!putDefense(targetRow, targetCol, gameMap, defenseManager)) {
+            return;
+        }
 
         switch (selectedType) {
-            case BOMB, TRAP, TURRET, FREEZE, POISON_CLOUD, BARRIER, SNIPER_TOWER, LASER_TOWER, CANNON_TOWER -> {
+            case BOMB -> {
+                defenseManager.addDefense(new Bomb(targetRow, targetCol));
+            }
+            case TRAP, TURRET, FREEZE, POISON_CLOUD, BARRIER, SNIPER_TOWER, LASER_TOWER, CANNON_TOWER -> {
                 defenseManager.addDefense(new AttackTower(targetRow, targetCol, selectedType, 10, 10, 10, 10));
             }
             default -> {
@@ -72,6 +77,13 @@ public class DefenseController {
             }
         }
         resetSelection();
+    }
+    private boolean putDefense(int row, int col, GameMap gameMap, DefenseManager defenseManager) {
+        CellType cellType = gameMap.getCell(row, col);
+        if (cellType == CellType.WALL || cellType == CellType.SPAWN || cellType == CellType.TOWER ) {
+            return false;
+        }
+        return !defenseManager.hasDefense(row, col);
     }
 
     public DefenseType getSelectedType() {

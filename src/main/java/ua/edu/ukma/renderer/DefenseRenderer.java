@@ -1,13 +1,9 @@
 package ua.edu.ukma.renderer;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
 import javafx.scene.layout.Pane;
-import ua.edu.ukma.model.defense.DefenseManager;
-import ua.edu.ukma.model.defense.DefenseStructure;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import ua.edu.ukma.model.defense.*;
+import java.util.*;
 
 public class DefenseRenderer {
 
@@ -37,8 +33,8 @@ public class DefenseRenderer {
                     Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path)));
 
                     imageView = new ImageView(img);
-                    imageView.setFitWidth(32);
-                    imageView.setFitHeight(32);
+                    imageView.setFitWidth(defense.getCustomSize());
+                    imageView.setFitHeight(defense.getCustomSize());
                     imageView.setPreserveRatio(true);
                     imageView.setMouseTransparent(true);
 
