@@ -10,7 +10,10 @@ import javafx.scene.shape.Line;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import ua.edu.ukma.config.GameScaleConfig;
 import ua.edu.ukma.config.GameWindowConfig;
+import ua.edu.ukma.map.MazeFactory;
+import ua.edu.ukma.model.GameMap;
 
 public class GameWindow {
 
@@ -30,7 +33,7 @@ public class GameWindow {
 
         stage.initStyle(StageStyle.UNDECORATED);
 
-        Pane root = createRoot(stage);
+        Pane root = createRoot(stage, screenBounds);
 
         Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
 
@@ -53,7 +56,7 @@ public class GameWindow {
         stage.show();
     }
 
-    private Pane createRoot(Stage stage) {
+    private Pane createRoot(Stage stage, Rectangle2D screenBounds) {
         Pane root = new Pane();
         root.setStyle(toBackgroundStyle(BACKGROUND_COLOR));
 
@@ -63,7 +66,7 @@ public class GameWindow {
         titleBar.prefWidthProperty().bind(root.widthProperty());
         titleBar.setPrefHeight(TITLE_BAR_HEIGHT);
 
-        Pane gameArea = createGameArea();
+        Pane gameArea = createGameArea(screenBounds);
         gameArea.setLayoutX(0);
         gameArea.setLayoutY(TITLE_BAR_HEIGHT);
         gameArea.prefWidthProperty().bind(root.widthProperty());
@@ -98,7 +101,7 @@ public class GameWindow {
         return titleBar;
     }
 
-    private Pane createGameArea() {
+    private Pane createGameArea(Rectangle2D screenBounds) {
         Pane gameArea = new Pane();
         gameArea.setStyle(toBackgroundStyle(BACKGROUND_COLOR));
 
@@ -110,7 +113,22 @@ public class GameWindow {
         bottomDivider.startYProperty().bind(gameArea.heightProperty().subtract(config.bottomPanelHeight()));
         bottomDivider.endYProperty().bind(gameArea.heightProperty().subtract(config.bottomPanelHeight()));
 
-        GameMapView mapView = new GameMapView();
+        GameMap gameMap = MazeFactory.createDefaultMaze();
+
+        double availableWidth = screenBounds.getWidth();
+        double availableHeight = screenBounds.getHeight()
+                - TITLE_BAR_HEIGHT
+                - config.topPanelHeight()
+                - config.bottomPanelHeight();
+
+        int tileSize = GameScaleConfig.calculateTileSize(
+                gameMap.rows(),
+                gameMap.cols(),
+                availableWidth,
+                availableHeight
+        );
+
+        GameMapView mapView = new GameMapView(gameMap, tileSize);
 
         mapView.layoutXProperty().bind(
                 gameArea.widthProperty()

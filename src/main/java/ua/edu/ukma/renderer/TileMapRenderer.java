@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import ua.edu.ukma.config.GameScaleConfig;
 import ua.edu.ukma.exception.AssetLoadingException;
 import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
@@ -14,25 +15,30 @@ import java.util.Map;
 
 public class TileMapRenderer implements Renderer<GameMap> {
 
-    private static final int TILE_SIZE = 48;
+    private final int tileSize;
 
     private final Map<CellType, Image> textures = new HashMap<>();
+
+    public TileMapRenderer(int tileSize) {
+        this.tileSize = tileSize;
+    }
 
     @Override
     public Node render(GameMap gameMap) {
         Pane pane = new Pane();
 
-        pane.setPrefSize(gameMap.cols() * TILE_SIZE, gameMap.rows() * TILE_SIZE);
+        pane.setPrefSize(gameMap.cols() * tileSize, gameMap.rows() * tileSize);
 
         for (int row = 0; row < gameMap.rows(); row++) {
             for (int col = 0; col < gameMap.cols(); col++) {
                 CellType cellType = gameMap.getCell(row, col);
 
                 ImageView tile = new ImageView(getTexture(cellType));
-                tile.setFitWidth(TILE_SIZE);
-                tile.setFitHeight(TILE_SIZE);
-                tile.setLayoutX(col * TILE_SIZE);
-                tile.setLayoutY(row * TILE_SIZE);
+                tile.setFitWidth(tileSize);
+                tile.setFitHeight(tileSize);
+                tile.setSmooth(false);
+                tile.setLayoutX(col * tileSize);
+                tile.setLayoutY(row * tileSize);
 
                 pane.getChildren().add(tile);
             }
@@ -54,6 +60,6 @@ public class TileMapRenderer implements Renderer<GameMap> {
             throw new AssetLoadingException("Cannot load tile texture: " + path);
         }
 
-        return new Image(stream);
+        return new Image(stream, GameScaleConfig.IMAGE_SIZE, GameScaleConfig.IMAGE_SIZE, false, false);
     }
 }
