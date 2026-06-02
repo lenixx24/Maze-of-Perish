@@ -1,4 +1,4 @@
-package ua.edu.ukma.entity.player;
+package ua.edu.ukma.entity;
 
 public enum Direction {
     LEFT(0, -1),

@@ -36,14 +36,7 @@ public abstract class Entity {
             onDeath();
         }
     }
-protected void loadSpriteSheet(String path){
-    Image spriteSheet = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path)));
-    this.imageView = new ImageView(spriteSheet);
-    this.imageView.setX(x);
-    this.imageView.setY(y);
-    imageView.setFitWidth(64);
-    imageView.setFitHeight(64);
-}
+
     protected void onDeath() {
         this.active = false;
     }

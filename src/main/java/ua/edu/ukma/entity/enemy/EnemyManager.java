@@ -3,6 +3,7 @@ package ua.edu.ukma.entity.enemy;
 
 import javafx.scene.layout.Pane;
 import ua.edu.ukma.entity.Entity;
+import ua.edu.ukma.model.GameMap;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,16 +14,17 @@ public class EnemyManager {
     private final List<Entity> enemies;
     private final Pane gamePane;
 
-    public EnemyManager(Pane gamePane) {
+    public EnemyManager(Pane gamePane, GameMap gameMap, int tileSize) {
         this.gamePane = gamePane;
         this.enemies = new ArrayList<>();
-        addEnemies();
+        addEnemies(gameMap, tileSize);
     }
 
-    private void addEnemies() {
-        spawnEnemy(new Wanderer(64, 64));
-        spawnEnemy(new Ram(64, 128));
-        spawnEnemy(new Destroyer(128, 0));
+    private void addEnemies(GameMap gameMap, int tileSize) {
+        System.out.println(tileSize);
+        spawnEnemy(new Wanderer(tileSize, tileSize-4, gameMap, tileSize));
+        spawnEnemy(new Ram(tileSize*2, tileSize-4, gameMap, tileSize));
+        spawnEnemy(new Destroyer(tileSize*3, tileSize-4, gameMap, tileSize));
 
     }
 

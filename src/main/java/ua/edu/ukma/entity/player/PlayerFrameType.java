@@ -1,6 +1,7 @@
 package ua.edu.ukma.entity.player;
 
 import ua.edu.ukma.annotation.PlayerFrame;
+import ua.edu.ukma.entity.Direction;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;

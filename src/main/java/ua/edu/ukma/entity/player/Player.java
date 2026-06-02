@@ -1,7 +1,7 @@
 package ua.edu.ukma.entity.player;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
+import ua.edu.ukma.entity.Direction;
 import ua.edu.ukma.entity.Entity;
 import ua.edu.ukma.entity.SpriteSheet;
 import ua.edu.ukma.model.GameMap;

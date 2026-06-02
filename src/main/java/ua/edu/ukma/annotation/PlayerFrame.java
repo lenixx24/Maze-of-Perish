@@ -1,6 +1,6 @@
 package ua.edu.ukma.annotation;
 
-import ua.edu.ukma.entity.player.Direction;
+import ua.edu.ukma.entity.Direction;
 import ua.edu.ukma.entity.player.PlayerState;
 
 import java.lang.annotation.Retention;
