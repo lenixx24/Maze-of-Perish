@@ -3,54 +3,53 @@ package ua.edu.ukma.renderer;
 import javafx.scene.image.*;
 import javafx.scene.layout.Pane;
 import ua.edu.ukma.model.defense.*;
+import ua.edu.ukma.model.defense.type.Bomb;
 import java.util.*;
 
 public class DefenseRenderer {
 
     private final Map<DefenseStructure, ImageView> views = new HashMap<>();
     private final Pane gamePane;
+    private final Map<Class<? extends DefenseStructure>, Image> staticTextures = new HashMap<>();
 
     public DefenseRenderer(Pane gamePane) {
         this.gamePane = gamePane;
+        loadTextures();
+    }
+    private void loadTextures() {
     }
 
     public void render(DefenseManager defenseManager, int tileSize) {
-        views.entrySet().removeIf(entry -> {
-            DefenseStructure defense = entry.getKey();
+        views.keySet().removeIf(defense -> {
             if (!defenseManager.getActiveDefenses().contains(defense)) {
-                gamePane.getChildren().remove(entry.getValue());
+                gamePane.getChildren().remove(views.get(defense));
                 return true;
             }
             return false;
         });
 
         for (DefenseStructure defense : defenseManager.getActiveDefenses()) {
-            ImageView imageView = views.get(defense);
+            if (defense instanceof Bomb bomb) {
+                ImageView currentView = bomb.getImageView(tileSize);
+                if (!gamePane.getChildren().contains(currentView)) {
+                    gamePane.getChildren().add(currentView);
+                }
+                views.put(bomb, currentView);
+                continue;
+            }
+            if (!views.containsKey(defense)) {
+                Image img = staticTextures.get(defense.getClass());
+                if (img != null) {
+                    ImageView imageView = new ImageView(img);
+                    imageView.setFitWidth(tileSize);
+                    imageView.setFitHeight(tileSize);
+                    imageView.setX(defense.getCol() * tileSize);
+                    imageView.setY(defense.getRow() * tileSize);
 
-            if (imageView == null) {
-                try {
-                    String path = defense.getType().texturePath();
-                    Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path)));
-
-                    imageView = new ImageView(img);
-                    imageView.setFitWidth(defense.getCustomSize());
-                    imageView.setFitHeight(defense.getCustomSize());
-                    imageView.setPreserveRatio(true);
-                    imageView.setMouseTransparent(true);
-
-                    views.put(defense, imageView);
                     gamePane.getChildren().add(imageView);
-
-                } catch (Exception e) {
-                    continue;
+                    views.put(defense, imageView);
                 }
             }
-
-            double pixelX = defense.getCol() * tileSize + (tileSize - imageView.getFitWidth()) / 2.0;
-            double pixelY = defense.getRow() * tileSize + (tileSize - imageView.getFitHeight()) / 2.0;
-
-            if (imageView.getLayoutX() != pixelX) imageView.setLayoutX(pixelX);
-            if (imageView.getLayoutY() != pixelY) imageView.setLayoutY(pixelY);
         }
     }
 }

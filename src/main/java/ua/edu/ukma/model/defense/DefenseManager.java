@@ -2,6 +2,7 @@ package ua.edu.ukma.model.defense;
 
 import ua.edu.ukma.entity.Entity;
 import ua.edu.ukma.entity.enemy.Enemy;
+import ua.edu.ukma.model.defense.type.Bomb;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,13 +19,21 @@ public class DefenseManager {
             DefenseStructure defense = iterator.next();
 
             if (defense instanceof DisposableTrap trap) {
-                for (Entity enemy : activeEnemies) {
-                    if (enemy.isActive() &&
-                            enemy.getRow(tileSize) == trap.getRow() &&
-                            enemy.getCol(tileSize) == trap.getCol()) {
-                        enemy.takeDamage((int) trap.getDamage());
-                        iterator.remove();
-                        break;
+                if (trap instanceof Bomb bomb) {
+                    if (bomb.isExploded()) {
+                        if (bomb.isAnimationFinished()) {
+                            iterator.remove();
+                        }
+                    }
+                    else {
+                        for (Entity enemy : activeEnemies) {
+                            if (enemy.isActive() &&
+                                    enemy.getRow(tileSize) == bomb.getRow() &&
+                                    enemy.getCol(tileSize) == bomb.getCol()) {
+                                    bomb.explode();
+                                break;
+                            }
+                        }
                     }
                 }
             }
