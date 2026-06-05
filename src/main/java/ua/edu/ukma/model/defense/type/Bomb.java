@@ -1,4 +1,5 @@
-package ua.edu.ukma.model.defense;
+package ua.edu.ukma.model.defense.type;
+import ua.edu.ukma.model.defense.*;
 
 public class Bomb extends DisposableTrap {
 

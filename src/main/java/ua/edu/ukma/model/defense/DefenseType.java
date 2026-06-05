@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 
 public enum DefenseType {
-    @DefenseTexture(value = "defense/trap.png", name = "Trap")
+    @DefenseTexture(value = "/defense/trap.png", name = "Trap")
     TRAP(4),
 
     @DefenseTexture(value = "/defense/bomb.png", name = "Bomb")

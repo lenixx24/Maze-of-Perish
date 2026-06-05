@@ -3,9 +3,12 @@ package ua.edu.ukma.ui;
 import javafx.scene.input.KeyCode;
 import ua.edu.ukma.config.GameScaleConfig;
 import ua.edu.ukma.entity.player.Player;
-import ua.edu.ukma.model.*;
-import ua.edu.ukma.model.defense.*;
+import ua.edu.ukma.model.CellType;
+import ua.edu.ukma.model.GameMap;
+import ua.edu.ukma.model.defense.AttackTower;
+import ua.edu.ukma.model.defense.DefenseManager;
 import ua.edu.ukma.model.defense.DefenseType;
+import ua.edu.ukma.model.defense.type.*;
 
 import java.util.Map;
 import java.util.Optional;
@@ -66,10 +69,22 @@ public class DefenseController {
         }
 
         switch (selectedType) {
+            case TRAP -> {
+                defenseManager.addDefense(new Trap(targetRow, targetCol));
+            }
             case BOMB -> {
                 defenseManager.addDefense(new Bomb(targetRow, targetCol));
             }
-            case TRAP, TURRET, FREEZE, POISON_CLOUD, BARRIER, SNIPER_TOWER, LASER_TOWER, CANNON_TOWER -> {
+            case FREEZE -> {
+                defenseManager.addDefense(new Freeze(targetRow, targetCol));
+            }
+            case POISON_CLOUD -> {
+                defenseManager.addDefense(new Poison(targetRow, targetCol));
+            }
+            case BARRIER -> {
+                defenseManager.addDefense(new Barrier(targetRow, targetCol));
+            }
+            case TURRET, SNIPER_TOWER, LASER_TOWER, CANNON_TOWER -> {
                 defenseManager.addDefense(new AttackTower(targetRow, targetCol, selectedType, 10, 10, 10, 10));
             }
             default -> {

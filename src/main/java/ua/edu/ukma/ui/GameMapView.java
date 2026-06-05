@@ -101,6 +101,7 @@ public class GameMapView extends Pane {
                 player.updateAnimation(now);
                 enemyManager.update();
                 int size = GameScaleConfig.calculateTileSize(gameMap.rows(), gameMap.cols(), getWidth(), getHeight());
+                defenseManager.updateDefenses(enemyManager.getEnemies(), size, 0.010);
                 defenseRenderer.render(defenseManager, size);
                 player.getView().toFront();
             }
