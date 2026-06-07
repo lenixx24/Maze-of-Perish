@@ -7,7 +7,7 @@ import java.util.*;
 
 public class PathFinder {
 
-    private static final int[][] DIRECTIONS = {
+    private static final int[][] BASE_DIRECTIONS = {
             {-1, 0}, {1, 0}, {0, -1}, {0, 1}
     };
     public static List<CellPosition> findPath(GameMap gameMap, CellPosition start, CellPosition target) {
@@ -16,12 +16,13 @@ public class PathFinder {
 
         queue.add(start);
         cameFrom.put(start, null);
-
+        List<int[]> directions = new ArrayList<>(Arrays.asList(BASE_DIRECTIONS));
         while (!queue.isEmpty()) {
             CellPosition current = queue.poll();
             if (current.row() == target.row() && current.col() == target.col())
                 return reconstructPath(cameFrom, current);
-            for (int[] dir : DIRECTIONS) {
+            Collections.shuffle(directions);
+            for (int[] dir : directions) {
                 int nextRow = current.row() + dir[0];
                 int nextCol = current.col() + dir[1];
                 CellPosition next = new CellPosition(nextRow, nextCol);
@@ -49,7 +50,7 @@ public class PathFinder {
         while (current != null) {
             path.add(current);
             current = cameFrom.get(current);
-            System.out.println(current);
+           // System.out.println(current);
         }
         Collections.reverse(path);
         return path;

@@ -28,7 +28,7 @@ protected Direction currentDir;
 
     private List<CellPosition> currentPath;
     private int currentPathIndex;
-
+    private boolean reachedTower = false;
     protected SpriteAnimation walkAnimation;
     protected SpriteAnimation deathAnimation;
     protected boolean isDying = false;
@@ -44,7 +44,7 @@ protected Direction currentDir;
 
         this.velocityX = speed;
         this.velocityY = speed;
-this.currentDir = Direction.RIGHT;
+        this.currentDir = Direction.RIGHT;
         loadSpriteSheet(spriteSheetPath);
     }
 
@@ -103,30 +103,13 @@ this.currentDir = Direction.RIGHT;
     protected void onDeath() {
         super.onDeath();
     }
-    protected void changeDirection(){
-
-        Direction dir = switch (r.nextInt(0, 4)) {
-
-        case 0 -> Direction.LEFT;
-
-        case 1 -> Direction.UP;
-
-        case 2 -> Direction.DOWN;
-
-        default -> Direction.RIGHT;
-
-        };
-
-    velocityX = speed*dir.colDelta();
-     velocityY = speed* dir.rowDelta();
-    }
     private void calculatePath() {
         CellPosition start = new CellPosition(getCurrentRow(), getCurrentCol());
         CellPosition towerPos = gameMap.findFirst(CellType.TOWER);
         currentPath = PathFinder.findPath(gameMap, start, towerPos);
 
         currentPathIndex = 1;
-        System.out.println(currentPath);
+      //  System.out.println(currentPath);
     }
 
     private void moveToNextNode() {
@@ -137,6 +120,10 @@ this.currentDir = Direction.RIGHT;
 
         double dx = targetX - x;
         double dy = targetY - y;
+        if (dx > 0)
+            imageView.setScaleX(1);
+        else if (dx < 0)
+            imageView.setScaleX(-1);
 
         double distance = Math.sqrt(dx * dx + dy * dy);
 
@@ -151,9 +138,14 @@ this.currentDir = Direction.RIGHT;
     }
 
     private void reachTower() {
+        this.reachedTower = true;
         this.active = false;
-        System.out.println("Tower is reached");
     }
+
+    public boolean isReachedTower() {
+        return reachedTower;
+    }
+
     protected void playAnimation(SpriteAnimation newAnimation) {
         if (currentAnimation != null) {
             if(currentAnimation.equals(newAnimation)) return;

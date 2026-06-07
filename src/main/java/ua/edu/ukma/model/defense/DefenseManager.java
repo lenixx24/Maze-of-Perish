@@ -12,7 +12,7 @@ public class DefenseManager {
 
     private final List<DefenseStructure> activeDefenses = new ArrayList<>();
 
-    public void updateDefenses(List<Entity> activeEnemies, int tileSize, double deltaTime) {
+    public void updateDefenses(List<Enemy> activeEnemies, int tileSize, double deltaTime) {
         Iterator<DefenseStructure> iterator = activeDefenses.iterator();
 
         while (iterator.hasNext()) {

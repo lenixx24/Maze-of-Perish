@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Random;
 
 public class EnemyManager {
-
-    private final List<Entity> enemies;
+    public int towerHP=4; //later will be moved to tower
+    private final List<Enemy> enemies;
     private final Pane gamePane;
     private final GameMap gameMap;
     private final List<CellPosition> spawnPoints;
@@ -34,23 +34,27 @@ public class EnemyManager {
 
     }
 
-    public void addEnemy(Entity enemy) {
+    public void addEnemy(Enemy enemy) {
        if(enemy==null) return;
         enemies.add(enemy);
         gamePane.getChildren().add(enemy.getImageView());
     }
-    public void update() {
-        Iterator<Entity> iterator = enemies.iterator();
+    public boolean update() {
+        Iterator<Enemy> iterator = enemies.iterator();
 
         while (iterator.hasNext()) {
-            Entity enemy = iterator.next();
+            Enemy enemy = iterator.next();
             enemy.update();
 
             if (!enemy.isActive()) {
+                if (enemy.isReachedTower())
+                    towerHP--;
+                System.out.println(towerHP);
                 removeEnemyFromScene(enemy);
                 iterator.remove();
             }
         }
+        return towerHP > 0;
     }
     private void findSpawnPoints() {
         for (int row = 0; row < gameMap.rows(); row++) {
@@ -89,7 +93,7 @@ public class EnemyManager {
         }
         enemies.clear();
     }
-    public List<Entity> getEnemies() {
+    public List<Enemy> getEnemies() {
         return enemies;
     }
 }
