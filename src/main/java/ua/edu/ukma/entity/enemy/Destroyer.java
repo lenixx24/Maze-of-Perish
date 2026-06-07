@@ -9,7 +9,7 @@ public class Destroyer extends Enemy {
 
 
     public Destroyer(double startX, double startY, GameMap gameMap, int tileSize) {
-        super(startX, startY, 1.5, 100, 1, "/enemies/destroyer.png", gameMap, tileSize);
+        super(startX, startY, 1.3, 100, 1, "/enemies/destroyer.png", gameMap, tileSize);
         loadAnimations();
         playAnimation(walkAnimation);
     }

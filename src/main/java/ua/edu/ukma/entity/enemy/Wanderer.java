@@ -8,7 +8,7 @@ import ua.edu.ukma.model.GameMap;
 public class Wanderer extends Enemy {
 
     public Wanderer(double startX, double startY, GameMap gameMap, int tileSize) {
-        super(startX, startY, 1.5, 100, 0, "/enemies/wanderer.png", gameMap, tileSize);
+        super(startX, startY, 1.0, 100, 0, "/enemies/wanderer.png", gameMap, tileSize);
         loadAnimations();
         playAnimation(walkAnimation);
     }

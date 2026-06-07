@@ -9,7 +9,7 @@ public class Ram extends Enemy {
 
 
     public Ram(double startX, double startY, GameMap gameMap, int tileSize) {
-        super(startX, startY, 0.5, 300, 2, "/enemies/ram.png", gameMap, tileSize);
+        super(startX, startY, 0.4, 300, 2, "/enemies/ram.png", gameMap, tileSize);
         loadAnimations();
         playAnimation(walkAnimation);
     }
