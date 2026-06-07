@@ -7,8 +7,11 @@ import ua.edu.ukma.config.GameScaleConfig;
 import ua.edu.ukma.entity.Direction;
 import ua.edu.ukma.entity.Entity;
 import ua.edu.ukma.entity.SpriteAnimation;
+import ua.edu.ukma.model.CellPosition;
+import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -22,6 +25,9 @@ public class Enemy extends Entity {
 protected Direction currentDir;
     protected double hitboxWidth;
     protected double hitboxHeight;
+
+    private List<CellPosition> currentPath;
+    private int currentPathIndex;
 
     protected SpriteAnimation walkAnimation;
     protected SpriteAnimation deathAnimation;
@@ -56,15 +62,12 @@ this.currentDir = Direction.RIGHT;
         }
 
         if (!isDying) {
-            double nextX = x + velocityX;
-            double nextY = y + velocityY;
-            if (canMoveTo(nextX, nextY)) {
-                x = nextX;
-                y = nextY;
-            } else {
-               changeDirection();
-            }
-
+            if (currentPath == null)
+                calculatePath();
+            if (currentPath != null && currentPathIndex < currentPath.size())
+                moveToNextNode();
+            else if (currentPath != null && currentPathIndex >= currentPath.size())
+                reachTower();
             imageView.setX(x);
             imageView.setY(y);
             imageView.toFront();
@@ -114,10 +117,43 @@ this.currentDir = Direction.RIGHT;
 
         };
 
-velocityX = speed*dir.colDelta();
- velocityY = speed* dir.rowDelta();
+    velocityX = speed*dir.colDelta();
+     velocityY = speed* dir.rowDelta();
+    }
+    private void calculatePath() {
+        CellPosition start = new CellPosition(getCurrentRow(), getCurrentCol());
+        CellPosition towerPos = gameMap.findFirst(CellType.TOWER);
+        currentPath = PathFinder.findPath(gameMap, start, towerPos);
+
+        currentPathIndex = 1;
+        System.out.println(currentPath);
     }
 
+    private void moveToNextNode() {
+        CellPosition targetCell = currentPath.get(currentPathIndex);
+
+        double targetX = targetCell.col() * tileSize;
+        double targetY = targetCell.row() * tileSize;
+
+        double dx = targetX - x;
+        double dy = targetY - y;
+
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance <= speed) {
+            x = targetX;
+            y = targetY;
+            currentPathIndex++;
+        } else {
+            x += (dx / distance) * speed;
+            y += (dy / distance) * speed;
+        }
+    }
+
+    private void reachTower() {
+        this.active = false;
+        System.out.println("Tower is reached");
+    }
     protected void playAnimation(SpriteAnimation newAnimation) {
         if (currentAnimation != null) {
             if(currentAnimation.equals(newAnimation)) return;
@@ -135,5 +171,12 @@ velocityX = speed*dir.colDelta();
         this.imageView.setY(y);
         imageView.setFitWidth(tileSize);
         imageView.setFitHeight(tileSize);
+    }
+    private int getCurrentRow() {
+        return (int) ((y + tileSize / 2.0) / tileSize);
+    }
+
+    private int getCurrentCol() {
+        return (int) ((x + tileSize / 2.0) / tileSize);
     }
 }
