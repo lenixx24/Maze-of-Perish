@@ -1,10 +1,5 @@
 package ua.edu.ukma.entity;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import ua.edu.ukma.config.GameScaleConfig;
-
-import java.util.Objects;
 
 public abstract class Entity {
     protected double x;
@@ -70,5 +65,9 @@ public abstract class Entity {
 
     public ImageView getImageView() {
         return imageView;
+    }
+
+    public SpriteAnimation getCurrentAnimation() {
+        return currentAnimation;
     }
 }

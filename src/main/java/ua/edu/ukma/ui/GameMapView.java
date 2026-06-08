@@ -7,6 +7,7 @@ import javafx.scene.layout.Pane;
 import ua.edu.ukma.config.GameScaleConfig;
 import ua.edu.ukma.entity.enemy.EnemyManager;
 import ua.edu.ukma.entity.Direction;
+import ua.edu.ukma.entity.enemy.WaveManager;
 import ua.edu.ukma.entity.player.Player;
 import ua.edu.ukma.model.CellPosition;
 import ua.edu.ukma.model.CellType;
@@ -30,6 +31,7 @@ public class GameMapView extends Pane {
     private final DefenseRenderer defenseRenderer;
 
     private final EnemyManager enemyManager;
+    private final WaveManager waveManager;
     private final Map<KeyCode, Direction> controls = Map.of(
             KeyCode.A, Direction.LEFT,
             KeyCode.LEFT, Direction.LEFT,
@@ -52,6 +54,7 @@ public class GameMapView extends Pane {
         this.defenseController = new DefenseController();
         this.defenseRenderer = new DefenseRenderer(this);
         this.enemyManager=new EnemyManager(this, gameMap, tileSize);
+        this.waveManager=new WaveManager(enemyManager);
         TileMapRenderer renderer = new TileMapRenderer(tileSize);
         Node mapNode = renderer.render(gameMap);
 
@@ -101,8 +104,10 @@ public class GameMapView extends Pane {
                 player.updateAnimation(now);
                 if (!enemyManager.update()) {
                         System.out.println("Lose!!!");
+                        enemyManager.stopAllAnimations();
                         this.stop();
                 }
+                waveManager.update(0.010);
                 int size = GameScaleConfig.calculateTileSize(gameMap.rows(), gameMap.cols(), getWidth(), getHeight());
                 defenseManager.updateDefenses(gameMap, enemyManager.getEnemies(), size, 0.010);
                 defenseRenderer.render(defenseManager, size);
