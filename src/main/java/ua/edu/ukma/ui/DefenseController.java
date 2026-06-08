@@ -10,8 +10,7 @@ import ua.edu.ukma.model.defense.DefenseManager;
 import ua.edu.ukma.model.defense.DefenseType;
 import ua.edu.ukma.model.defense.type.*;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class DefenseController {
 
@@ -84,7 +83,10 @@ public class DefenseController {
             case BARRIER -> {
                 defenseManager.addDefense(new Barrier(targetRow, targetCol));
             }
-            case TURRET, SNIPER_TOWER, LASER_TOWER, CANNON_TOWER -> {
+            case TURRET -> {
+                defenseManager.addDefense(new Turret(targetRow, targetCol));
+            }
+            case SNIPER_TOWER, LASER_TOWER, CANNON_TOWER -> {
                 defenseManager.addDefense(new AttackTower(targetRow, targetCol, selectedType, 10, 10, 10, 10));
             }
             default -> {
