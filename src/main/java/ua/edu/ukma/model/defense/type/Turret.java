@@ -5,7 +5,6 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import ua.edu.ukma.entity.SpriteSheet;
 import ua.edu.ukma.entity.enemy.Enemy;
 import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
@@ -17,12 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Turret extends AttackTower {
-
-    private final SpriteSheet<Integer> spriteSheet;
-    private final ImageView baseView;
-    private final ImageView barrelView;
-    private final Group viewGroup;
-
     private double shootCooldown = 0.0;
     private final double shootDelay = 0.7;
 
@@ -30,25 +23,7 @@ public class Turret extends AttackTower {
 
     public Turret(int row, int col) {
         super(row, col, DefenseType.TURRET, 10, 10, 10, 10);
-
-        this.spriteSheet = new SpriteSheet<>(
-                DefenseType.TURRET.texturePath(),
-                frame -> frame * 32,
-                frame -> 0,
-                frame -> 32,
-                frame -> 32
-        );
-
-        this.baseView = this.spriteSheet.createImageView();
-        this.spriteSheet.applyFrame(this.baseView, 0);
-
-        this.barrelView = this.spriteSheet.createImageView();
-        this.spriteSheet.applyFrame(this.barrelView, 1);
-
-        this.viewGroup = new Group(baseView, barrelView);
-        this.viewGroup.setMouseTransparent(true);
     }
-
     public void updateTurret(List<Enemy> activeEnemies, GameMap gameMap, int tileSize, double deltaTime) {
         double centerX = (getCol() * tileSize) + (tileSize / 2.0);
         double centerY = (getRow() * tileSize) + (tileSize / 2.0);

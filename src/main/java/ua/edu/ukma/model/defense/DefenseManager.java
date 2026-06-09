@@ -57,6 +57,15 @@ public class DefenseManager {
             else if (defense instanceof Turret turret) {
                 turret.updateTurret(activeEnemies, gameMap, tileSize, deltaTime);
             }
+            else if (defense instanceof Laser laser) {
+                laser.updateTurret(activeEnemies, gameMap, tileSize, deltaTime);
+            }
+            else if (defense instanceof Sniper sniper) {
+                sniper.updateTurret(activeEnemies, gameMap, tileSize, deltaTime);
+            }
+            else if (defense instanceof Cannon cannon) {
+                cannon.updateTurret(activeEnemies, gameMap, tileSize, deltaTime);
+            }
             else if (defense instanceof EffectZone zone) {
                 zone.updateLifetime(deltaTime);
                 if (zone.isExpired()) {
@@ -99,7 +108,25 @@ public class DefenseManager {
             }
             else if (defense instanceof BarrierZone barrier) {
                 barrier.updateLifetime(deltaTime);
+                for (Enemy enemy : activeEnemies) {
+                    if (enemy.isActive() &&
+                            enemy.getRow(tileSize) == barrier.getRow() &&
+                            enemy.getCol(tileSize) == barrier.getCol()) {
+
+                       if (!frozenEnemies.containsKey(enemy)) {
+                            frozenEnemies.put(enemy, enemy.getSpeed());
+                        }
+                        enemy.setSpeed(enemy.getSpeed() * 0.9);
+                        barrier.takeDamage(1);
+                    }
+                }
                 if (barrier.isDestroyed()) {
+                    for (Enemy enemy : activeEnemies) {
+                        if (enemy.getRow(tileSize) == barrier.getRow() &&
+                                enemy.getCol(tileSize) == barrier.getCol()) {
+                            restoreEnemySpeed(enemy);
+                        }
+                    }
                     iterator.remove();
                 }
             }
@@ -116,12 +143,10 @@ public class DefenseManager {
             if (d.getRow() == row && d.getCol() == col) {
                 return true;
             }
-
-            if (d instanceof Freeze) {
+            if (d instanceof Freeze || d instanceof Poison) {
                 int rowDiff = Math.abs(d.getRow() - row);
                 int colDiff = Math.abs(d.getCol() - col);
-
-                if (rowDiff <= 2 && colDiff <= 2) {
+                if (rowDiff <= 1 && colDiff <= 1) {
                     return true;
                 }
             }

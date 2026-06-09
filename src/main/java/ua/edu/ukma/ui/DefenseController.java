@@ -5,25 +5,25 @@ import ua.edu.ukma.config.GameScaleConfig;
 import ua.edu.ukma.entity.player.Player;
 import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
-import ua.edu.ukma.model.defense.AttackTower;
 import ua.edu.ukma.model.defense.DefenseManager;
 import ua.edu.ukma.model.defense.DefenseType;
 import ua.edu.ukma.model.defense.type.*;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 
 public class DefenseController {
 
     private final Map<KeyCode, DefenseType> defenseControls = Map.ofEntries(
-            Map.entry(KeyCode.DIGIT4, DefenseType.TRAP),
-            Map.entry(KeyCode.DIGIT5, DefenseType.BOMB),
-            Map.entry(KeyCode.DIGIT6, DefenseType.TURRET),
-            Map.entry(KeyCode.DIGIT7, DefenseType.FREEZE),
-            Map.entry(KeyCode.DIGIT8, DefenseType.POISON_CLOUD),
-            Map.entry(KeyCode.DIGIT9, DefenseType.BARRIER),
-            Map.entry(KeyCode.DIGIT0, DefenseType.SNIPER_TOWER),
-            Map.entry(KeyCode.E, DefenseType.LASER_TOWER),
-            Map.entry(KeyCode.T, DefenseType.CANNON_TOWER)
+            Map.entry(KeyCode.DIGIT1, DefenseType.TRAP),
+            Map.entry(KeyCode.DIGIT2, DefenseType.BOMB),
+            Map.entry(KeyCode.DIGIT3, DefenseType.TURRET),
+            Map.entry(KeyCode.DIGIT4, DefenseType.FREEZE),
+            Map.entry(KeyCode.DIGIT5, DefenseType.POISON_CLOUD),
+            Map.entry(KeyCode.DIGIT6, DefenseType.BARRIER),
+            Map.entry(KeyCode.DIGIT7, DefenseType.SNIPER_TOWER),
+            Map.entry(KeyCode.DIGIT8, DefenseType.LASER_TOWER),
+            Map.entry(KeyCode.DIGIT9, DefenseType.CANNON_TOWER)
     );
 
     private DefenseType selectedType = null;
@@ -69,8 +69,9 @@ public class DefenseController {
             case POISON_CLOUD -> defenseManager.addDefense(new Poison(targetRow, targetCol));
             case BARRIER -> defenseManager.addDefense(new Barrier(targetRow, targetCol));
             case TURRET -> defenseManager.addDefense(new Turret(targetRow, targetCol));
-            case SNIPER_TOWER, LASER_TOWER, CANNON_TOWER ->
-                    defenseManager.addDefense(new AttackTower(targetRow, targetCol, selectedType, 10, 10, 10, 10));
+            case LASER_TOWER -> defenseManager.addDefense(new Laser(targetRow, targetCol));
+            case SNIPER_TOWER -> defenseManager.addDefense(new Sniper(targetRow, targetCol));
+            case CANNON_TOWER  -> defenseManager.addDefense(new Cannon(targetRow, targetCol));
             default -> { return; }
         }
         resetSelection();

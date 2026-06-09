@@ -58,7 +58,7 @@ public class Freeze extends EffectZone {
 
             int targetRow = getRow() + offset[0];
             int targetCol = getCol() + offset[1];
-            if (gameMap.isInside(targetRow, targetCol) && gameMap.getCell(targetRow, targetCol) != CellType.WALL && gameMap.getCell(targetRow, targetCol)!= CellType.SPAWN && gameMap.getCell(targetRow, targetCol)!= CellType.TOWER) {
+            if (gameMap.isInside(targetRow, targetCol) && gameMap.getCell(targetRow, targetCol) != CellType.WALL && gameMap.getCell(targetRow, targetCol)!= CellType.SPAWN && gameMap.getCell(targetRow, targetCol)!= CellType.TOWER ) {
                 zv.setVisible(true);
                 zv.setFitWidth(tileSize);
                 zv.setFitHeight(tileSize);

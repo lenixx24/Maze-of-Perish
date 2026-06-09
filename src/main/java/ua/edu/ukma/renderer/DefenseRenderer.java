@@ -8,10 +8,7 @@ import javafx.scene.layout.Pane;
 import ua.edu.ukma.model.GameMap;
 import ua.edu.ukma.model.defense.DefenseManager;
 import ua.edu.ukma.model.defense.DefenseStructure;
-import ua.edu.ukma.model.defense.type.Bomb;
-import ua.edu.ukma.model.defense.type.Freeze;
-import ua.edu.ukma.model.defense.type.Trap;
-import ua.edu.ukma.model.defense.type.Turret;
+import ua.edu.ukma.model.defense.type.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +39,30 @@ public class DefenseRenderer {
         });
 
         for (DefenseStructure defense : defenseManager.getActiveDefenses()) {
+            if (defense instanceof Laser laser) {
+                Group currentGroup = laser.getViewGroup(tileSize);
+                if (!gamePane.getChildren().contains(currentGroup)) {
+                    gamePane.getChildren().add(currentGroup);
+                }
+                views.put(laser, currentGroup);
+                continue;
+            }
+            if (defense instanceof Sniper sniper) {
+                Group currentGroup = sniper.getViewGroup(tileSize);
+                if (!gamePane.getChildren().contains(currentGroup)) {
+                    gamePane.getChildren().add(currentGroup);
+                }
+                views.put(sniper, currentGroup);
+                continue;
+            }
+            if (defense instanceof Cannon cannon) {
+                Group currentGroup = cannon.getViewGroup(tileSize);
+                if (!gamePane.getChildren().contains(currentGroup)) {
+                    gamePane.getChildren().add(currentGroup);
+                }
+                views.put(cannon, currentGroup);
+                continue;
+            }
             if (defense instanceof Turret turret) {
                 Group currentGroup = turret.getViewGroup(tileSize);
                 if (!gamePane.getChildren().contains(currentGroup)) {
@@ -78,6 +99,34 @@ public class DefenseRenderer {
                 }
 
                 views.put(freeze, currentGroup);
+                continue;
+            }
+            if (defense instanceof Poison poison) {
+                Group currentGroup = poison.getViewGroup(gameMap, tileSize);
+
+                if (!gamePane.getChildren().contains(currentGroup)) {
+                    if (gamePane.getChildren().size() > 1) {
+                        gamePane.getChildren().add(1, currentGroup);
+                    } else {
+                        gamePane.getChildren().add(currentGroup);
+                    }
+                }
+
+                views.put(poison, currentGroup);
+                continue;
+            }
+            if (defense instanceof Barrier barrier) {
+                Group currentGroup = barrier.getViewGroup(gameMap, tileSize);
+
+                if (!gamePane.getChildren().contains(currentGroup)) {
+                    if (gamePane.getChildren().size() > 1) {
+                        gamePane.getChildren().add(1, currentGroup);
+                    } else {
+                        gamePane.getChildren().add(currentGroup);
+                    }
+                }
+
+                views.put(barrier, currentGroup);
                 continue;
             }
             if (!views.containsKey(defense)) {
