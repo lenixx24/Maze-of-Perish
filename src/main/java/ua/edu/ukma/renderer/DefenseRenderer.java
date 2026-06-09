@@ -1,11 +1,20 @@
 package ua.edu.ukma.renderer;
 
-import javafx.scene.image.*;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.*;
-import ua.edu.ukma.model.defense.*;
-import ua.edu.ukma.model.defense.type.*;
-import java.util.*;
+import ua.edu.ukma.model.GameMap;
+import ua.edu.ukma.model.defense.DefenseManager;
+import ua.edu.ukma.model.defense.DefenseStructure;
+import ua.edu.ukma.model.defense.type.Bomb;
+import ua.edu.ukma.model.defense.type.Freeze;
+import ua.edu.ukma.model.defense.type.Trap;
+import ua.edu.ukma.model.defense.type.Turret;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DefenseRenderer {
 
@@ -20,7 +29,7 @@ public class DefenseRenderer {
     private void loadTextures() {
     }
 
-    public void render(DefenseManager defenseManager, int tileSize) {
+    public void render(GameMap gameMap, DefenseManager defenseManager, int tileSize) {
         views.keySet().removeIf(defense -> {
             if (!defenseManager.getActiveDefenses().contains(defense)) {
                 gamePane.getChildren().remove(views.get(defense));
@@ -55,6 +64,20 @@ public class DefenseRenderer {
                     gamePane.getChildren().add(currentView);
                 }
                 views.put(trap, currentView);
+                continue;
+            }
+            if (defense instanceof Freeze freeze) {
+                Group currentGroup = freeze.getViewGroup(gameMap, tileSize);
+
+                if (!gamePane.getChildren().contains(currentGroup)) {
+                    if (gamePane.getChildren().size() > 1) {
+                        gamePane.getChildren().add(1, currentGroup);
+                    } else {
+                        gamePane.getChildren().add(currentGroup);
+                    }
+                }
+
+                views.put(freeze, currentGroup);
                 continue;
             }
             if (!views.containsKey(defense)) {

@@ -17,7 +17,7 @@ public class Trap extends DisposableTrap {
     private SpriteAnimation eatAnimation;
 
     public Trap(int row, int col) {
-        super(row, col, DefenseType.TRAP, 1.0, 1.0);
+        super(row, col, DefenseType.TRAP, 3.5, 1.0);
         this.spriteSheet = new SpriteSheet<>(
                 DefenseType.TRAP.texturePath(),
                 frame -> frame,

@@ -38,13 +38,8 @@ public class DefenseController {
     public void buildDefense(double clickX, double clickY, double availableWidth, double availableHeight,
                              GameMap gameMap, DefenseManager defenseManager, Player player) {
 
-        if (selectedType == null) {
-            return;
-        }
-
-        if (player.isMoving()) {
-            return;
-        }
+        if (selectedType == null) return;
+        if (player.isMoving()) return;
 
         int tileSize = GameScaleConfig.calculateTileSize(gameMap.rows(), gameMap.cols(), availableWidth, availableHeight);
         int targetCol = (int) (clickX / tileSize);
@@ -63,39 +58,28 @@ public class DefenseController {
         if (!isHorizontalLine && !isVerticalLine) {
             return;
         }
-        if (!putDefense(targetRow, targetCol, gameMap, defenseManager)) {
+        if (!putDefense(targetRow, targetCol, selectedType, gameMap, defenseManager)) {
             return;
         }
 
         switch (selectedType) {
-            case TRAP -> {
-                defenseManager.addDefense(new Trap(targetRow, targetCol));
-            }
-            case BOMB -> {
-                defenseManager.addDefense(new Bomb(targetRow, targetCol));
-            }
-            case FREEZE -> {
-                defenseManager.addDefense(new Freeze(targetRow, targetCol));
-            }
-            case POISON_CLOUD -> {
-                defenseManager.addDefense(new Poison(targetRow, targetCol));
-            }
-            case BARRIER -> {
-                defenseManager.addDefense(new Barrier(targetRow, targetCol));
-            }
-            case TURRET -> {
-                defenseManager.addDefense(new Turret(targetRow, targetCol));
-            }
-            case SNIPER_TOWER, LASER_TOWER, CANNON_TOWER -> {
-                defenseManager.addDefense(new AttackTower(targetRow, targetCol, selectedType, 10, 10, 10, 10));
-            }
-            default -> {
-                return;
-            }
+            case TRAP -> defenseManager.addDefense(new Trap(targetRow, targetCol));
+            case BOMB -> defenseManager.addDefense(new Bomb(targetRow, targetCol));
+            case FREEZE -> defenseManager.addDefense(new Freeze(targetRow, targetCol));
+            case POISON_CLOUD -> defenseManager.addDefense(new Poison(targetRow, targetCol));
+            case BARRIER -> defenseManager.addDefense(new Barrier(targetRow, targetCol));
+            case TURRET -> defenseManager.addDefense(new Turret(targetRow, targetCol));
+            case SNIPER_TOWER, LASER_TOWER, CANNON_TOWER ->
+                    defenseManager.addDefense(new AttackTower(targetRow, targetCol, selectedType, 10, 10, 10, 10));
+            default -> { return; }
         }
         resetSelection();
     }
-    private boolean putDefense(int row, int col, GameMap gameMap, DefenseManager defenseManager) {
+    private boolean putDefense(int row, int col, DefenseType type, GameMap gameMap, DefenseManager defenseManager) {
+        if (defenseManager.hasDefense(row, col)) {
+            return false;
+        }
+
         CellType cellType = gameMap.getCell(row, col);
         if (cellType == CellType.WALL || cellType == CellType.SPAWN || cellType == CellType.TOWER ) {
             return false;

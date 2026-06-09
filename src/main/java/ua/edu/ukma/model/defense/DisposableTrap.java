@@ -9,7 +9,6 @@ public abstract class DisposableTrap extends DefenseStructure {
         this.damage = damage;
         this.radius = radius;
     }
-
     public double getDamage() {
         return damage;
     }

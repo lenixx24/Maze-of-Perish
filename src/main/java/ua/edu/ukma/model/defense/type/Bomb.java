@@ -18,7 +18,7 @@ public class Bomb extends DisposableTrap {
     private SpriteAnimation explosionAnimation;
 
     public Bomb(int row, int col) {
-        super(row, col, DefenseType.BOMB, 1.0, 1.0);
+        super(row, col, DefenseType.BOMB, 2.5, 1.0);
         this.spriteSheet = new SpriteSheet<>(
                 DefenseType.BOMB.texturePath(),
                 frame -> frame * (32 + 2),

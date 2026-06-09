@@ -9,8 +9,10 @@ import java.util.*;
 public class DefenseManager {
 
     private final List<DefenseStructure> activeDefenses = new ArrayList<>();
+    private final Map<Enemy, Double> frozenEnemies = new HashMap<>();
 
     public void updateDefenses(GameMap gameMap, List<Enemy> activeEnemies, int tileSize, double deltaTime) {
+        frozenEnemies.keySet().removeIf(enemy -> !activeEnemies.contains(enemy) || !enemy.isActive());
         Iterator<DefenseStructure> iterator = activeDefenses.iterator();
 
         while (iterator.hasNext()) {
@@ -58,14 +60,43 @@ public class DefenseManager {
             else if (defense instanceof EffectZone zone) {
                 zone.updateLifetime(deltaTime);
                 if (zone.isExpired()) {
+                    if (zone instanceof Freeze) {
+                        for (Enemy enemy : activeEnemies) {
+                            if (enemy.isActive() && zone.isEnemyInRange(enemy, tileSize)) {
+                                restoreEnemySpeed(enemy);
+                            }
+                        }
+                    }
                     iterator.remove();
                     continue;
                 }
-                for (Entity enemy : activeEnemies) {
-                    if (enemy.isActive() && zone.isEnemyInRange((Enemy) enemy, tileSize)) {
-                        if (zone.getDamagePerSecond() > 0) {
-                            enemy.takeDamage((int) (zone.getDamagePerSecond() * deltaTime));
-                }}}}
+
+                for (Enemy enemy : activeEnemies) {
+                    if (enemy.isActive()) {
+
+                        if (zone.isEnemyInRange(enemy, tileSize)) {
+                            if (zone.getDamagePerSecond() > 0) {
+                                enemy.takeDamage((int) (zone.getDamagePerSecond() * deltaTime));
+                            }
+                            if (zone instanceof Freeze) {
+                                if (!frozenEnemies.containsKey(enemy)) {
+                                    frozenEnemies.put(enemy, enemy.getSpeed());
+                                    enemy.setSpeed(enemy.getSpeed() * 0.3);
+                                }
+                            }
+                        } else {
+                            if (zone instanceof Freeze) {
+                                boolean insideAnotherFreeze = activeDefenses.stream()
+                                        .filter(d -> d != zone && d instanceof Freeze && !((Freeze) d).isExpired())
+                                        .anyMatch(f -> ((Freeze) f).isEnemyInRange(enemy, tileSize));
+                                if (!insideAnotherFreeze) {
+                                    restoreEnemySpeed(enemy);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             else if (defense instanceof BarrierZone barrier) {
                 barrier.updateLifetime(deltaTime);
                 if (barrier.isDestroyed()) {
@@ -74,9 +105,28 @@ public class DefenseManager {
             }
         }
     }
+    private void restoreEnemySpeed(Enemy enemy) {
+        if (frozenEnemies.containsKey(enemy)) {
+            enemy.setSpeed(frozenEnemies.get(enemy));
+            frozenEnemies.remove(enemy);
+        }
+    }
     public boolean hasDefense(int row, int col) {
-        return activeDefenses.stream()
-                .anyMatch(d -> d.getRow() == row && d.getCol() == col);
+        for (DefenseStructure d : activeDefenses) {
+            if (d.getRow() == row && d.getCol() == col) {
+                return true;
+            }
+
+            if (d instanceof Freeze) {
+                int rowDiff = Math.abs(d.getRow() - row);
+                int colDiff = Math.abs(d.getCol() - col);
+
+                if (rowDiff <= 2 && colDiff <= 2) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     public void addDefense(DefenseStructure defense) {
         activeDefenses.add(defense);

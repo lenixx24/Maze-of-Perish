@@ -110,7 +110,7 @@ public class GameMapView extends Pane {
                 waveManager.update(0.010);
                 int size = GameScaleConfig.calculateTileSize(gameMap.rows(), gameMap.cols(), getWidth(), getHeight());
                 defenseManager.updateDefenses(gameMap, enemyManager.getEnemies(), size, 0.010);
-                defenseRenderer.render(defenseManager, size);
+                defenseRenderer.render(gameMap, defenseManager, size);
                 player.getView().toFront();
             }
         };
