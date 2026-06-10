@@ -27,9 +27,10 @@ public abstract class Entity {
         this.health -= amount;
         if (this.health <= 0) {
             this.health = 0;
-            this.active = false;
             onDeath();
         }
+
+
     }
 
     protected void onDeath() {

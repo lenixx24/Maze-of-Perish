@@ -51,16 +51,6 @@ protected Direction currentDir;
     @Override
     public void update() {
         if (!active) return;
-
-        if (health <= 0 && !isDying) {
-            isDying = true;
-            playAnimation(deathAnimation);
-            deathAnimation.setOnFinished(e -> {
-                onDeath();
-            });
-            return;
-        }
-
         if (!isDying) {
             if (currentPath == null)
                 calculatePath();
@@ -101,7 +91,12 @@ protected Direction currentDir;
 
     @Override
     protected void onDeath() {
-        super.onDeath();
+        if(isDying) return;
+        isDying = true;
+        playAnimation(deathAnimation);
+        deathAnimation.setOnFinished(e -> {
+            super.onDeath();
+        });
     }
     private void calculatePath() {
         CellPosition start = new CellPosition(getCurrentRow(), getCurrentCol());
@@ -139,7 +134,7 @@ protected Direction currentDir;
 
     private void reachTower() {
         this.reachedTower = true;
-        this.active = false;
+        onDeath();
     }
 
     public boolean isReachedTower() {

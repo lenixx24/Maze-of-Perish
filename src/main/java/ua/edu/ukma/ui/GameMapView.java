@@ -93,6 +93,9 @@ public class GameMapView extends Pane {
         setOnKeyPressed(event -> {
             Optional.ofNullable(controls.get(event.getCode())).ifPresent(player::move);
             defenseController.handle(event.getCode());
+            if (event.getCode() == KeyCode.ENTER)
+                waveManager.startWaveEarly();
+
         });
 
         startGameLoop();

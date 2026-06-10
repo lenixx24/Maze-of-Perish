@@ -3,10 +3,8 @@ package ua.edu.ukma.entity.enemy;
 public class WaveManager {
 
     private final EnemyManager enemyManager;
-
-    // Налаштування хвиль
     private int currentWave = 0;
-    private final int MAX_WAVES = 2;
+    private final int MAX_WAVES = 5;
     private final double PREP_TIME_SECONDS = 15.0;
 
     private boolean isPreparationPhase = true;

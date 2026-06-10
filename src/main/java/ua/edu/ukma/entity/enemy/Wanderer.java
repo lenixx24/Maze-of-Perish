@@ -21,7 +21,7 @@ public class Wanderer extends Enemy {
         walkAnimation.setCycleCount(Animation.INDEFINITE);
         deathAnimation = new SpriteAnimation(
                 imageView, Duration.millis(800),
-                6, 3, 0, 0, 48, 48
+                9, 3, 0, 96, 48, 48
         );
         deathAnimation.setCycleCount(1);
     }
