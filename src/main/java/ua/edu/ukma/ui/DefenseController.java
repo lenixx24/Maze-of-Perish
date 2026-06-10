@@ -3,7 +3,6 @@ package ua.edu.ukma.ui;
 import javafx.scene.input.KeyCode;
 import ua.edu.ukma.config.GameScaleConfig;
 import ua.edu.ukma.entity.player.Player;
-import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
 import ua.edu.ukma.model.defense.DefenseManager;
 import ua.edu.ukma.model.defense.DefenseType;
@@ -53,16 +52,7 @@ public class DefenseController {
             return;
         }
 
-        int playerRow = player.getRow(tileSize);
-        int playerCol = player.getCol(tileSize);
-
-        boolean isHorizontalLine = (playerRow == targetRow);
-        boolean isVerticalLine = (playerCol == targetCol);
-
-        if (!isHorizontalLine && !isVerticalLine) {
-            return;
-        }
-        if (!putDefense(targetRow, targetCol, selectedType, gameMap, defenseManager)) {
+        if (!BuildPlacementHelper.isAvailableCell(targetRow, targetCol, gameMap, defenseManager, player, tileSize, selectedType)) {
             return;
         }
 
@@ -80,23 +70,6 @@ public class DefenseController {
         }
         manaManager.decreaseMana(selectedType.manaCost());
         resetSelection();
-    }
-    private boolean putDefense(int row, int col, DefenseType type, GameMap gameMap, DefenseManager defenseManager) {
-        if (defenseManager.hasDefense(row, col, gameMap, type)) {
-            return false;
-        }
-
-        CellType cellType = gameMap.getCell(row, col);
-        if (cellType == CellType.WALL || cellType == CellType.SPAWN || cellType == CellType.TOWER) {
-            return false;
-        }
-        if (type == DefenseType.FREEZE || type == DefenseType.POISON_CLOUD) {
-            for (ua.edu.ukma.model.defense.DefenseStructure d : defenseManager.getActiveDefenses()) {
-                if (DefenseManager.ZoneDist(row, col, d)) return false;
-            }
-        }
-
-        return true;
     }
 
     public DefenseType getSelectedType() {
