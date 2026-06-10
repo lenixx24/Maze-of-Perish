@@ -31,10 +31,6 @@ public class EnemyManager {
         this.tileSize=tileSize;
         this.defenseManager=defenseManager;
         findSpawnPoints();
-        for(int i=0; i<4; i++){
-            spawnEnemy();
-        }
-
     }
 
     public void addEnemy(Enemy enemy) {

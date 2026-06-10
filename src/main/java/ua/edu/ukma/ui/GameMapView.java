@@ -23,7 +23,7 @@ import java.util.Optional;
 public class GameMapView extends Pane {
 
     private final int tileSize;
-
+    private final TopPanelView topPanel;
     private final GameMap gameMap;
     private final Player player;
     private final ManaManager manaManager=new ManaManager(100,100,10);
@@ -48,10 +48,10 @@ public class GameMapView extends Pane {
             KeyCode.DOWN, Direction.DOWN
     );
 
-    public GameMapView(GameMap gameMap, int tileSize) {
+    public GameMapView(GameMap gameMap, int tileSize, TopPanelView topPanel) {
         this.gameMap = gameMap;
         this.tileSize = tileSize;
-
+this.topPanel=topPanel;
         this.defenseManager = new DefenseManager();
         this.defenseController = new DefenseController();
         this.defenseRenderer = new DefenseRenderer(this);
@@ -113,6 +113,7 @@ public class GameMapView extends Pane {
                         this.stop();
                 }
                 waveManager.update(0.010);
+                topPanel.update(waveManager);
                 manaManager.regenerate(0.01);
                 int size = GameScaleConfig.calculateTileSize(gameMap.rows(), gameMap.cols(), getWidth(), getHeight());
                 defenseManager.updateDefenses(gameMap, enemyManager.getEnemies(), size, 0.010);

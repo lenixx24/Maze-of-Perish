@@ -98,8 +98,11 @@ public class GameWindow {
                 availableWidth,
                 availableHeight
         );
+        TopPanelView topPanel = new TopPanelView(screenBounds.getWidth(), config.topPanelHeight());
+        topPanel.setLayoutX(0);
+        topPanel.setLayoutY(0);
 
-        GameMapView mapView = new GameMapView(gameMap, tileSize);
+        GameMapView mapView = new GameMapView(gameMap, tileSize, topPanel);
 
         mapView.layoutXProperty().bind(
                 gameArea.widthProperty()
@@ -116,7 +119,7 @@ public class GameWindow {
                         .add(config.topPanelHeight())
         );
 
-        gameArea.getChildren().addAll(mapView, topDivider, bottomDivider);
+        gameArea.getChildren().addAll(mapView, topDivider, bottomDivider, topPanel);
         return gameArea;
     }
 

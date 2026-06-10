@@ -13,18 +13,20 @@ public class WaveManager {
     private int enemiesSpawnedSoFar = 0;
     private double spawnIntervalTimer = 0;
     private final double SPAWN_INTERVAL_SECONDS = 2;
-
+    private boolean hasStarted=false;
     public WaveManager(EnemyManager enemyManager) {
         this.enemyManager = enemyManager;
-        startPreparationPhase();
     }
 
     public void update(double deltaTime) {
+        if(!hasStarted){
+            startPreparationPhase();
+            hasStarted=true;
+        }
         if (isPreparationPhase) {
             prepTimer -= deltaTime;
-            if (prepTimer <= 0) {
-                startWave();
-            }
+            if (prepTimer <= 0) startWave();
+
         } else {
             if (enemiesSpawnedSoFar < enemiesToSpawnThisWave) {
                 spawnIntervalTimer -= deltaTime;
@@ -34,11 +36,8 @@ public class WaveManager {
                     enemiesSpawnedSoFar++;
                     spawnIntervalTimer = SPAWN_INTERVAL_SECONDS;
                 }
-            } else {
-                if (enemyManager.getEnemies().isEmpty()) {
-                    startPreparationPhase();
-                }
-            }
+            } else if (enemyManager.getEnemies().isEmpty()) startPreparationPhase();
+
         }
     }
     private void startPreparationPhase() {
@@ -54,15 +53,11 @@ public class WaveManager {
         enemiesToSpawnThisWave = 2 + (currentWave * 2);
         enemiesSpawnedSoFar = 0;
         spawnIntervalTimer = 0;
-
-        System.out.println("Prepare to wave " + currentWave + "!");
     }
 
     public void startWave() {
         if (!isPreparationPhase) return;
-
         isPreparationPhase = false;
-        System.out.println("Wave " + currentWave + " has been started!!!");
     }
     public void startWaveEarly() {
         if (isPreparationPhase) {
