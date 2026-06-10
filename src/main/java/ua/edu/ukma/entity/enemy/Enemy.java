@@ -1,15 +1,16 @@
 package ua.edu.ukma.entity.enemy;
-
-import javafx.scene.canvas.GraphicsContext;
+import javafx.animation.Animation;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import ua.edu.ukma.config.GameScaleConfig;
+import javafx.util.Duration;
 import ua.edu.ukma.entity.Direction;
 import ua.edu.ukma.entity.Entity;
 import ua.edu.ukma.entity.SpriteAnimation;
 import ua.edu.ukma.model.CellPosition;
 import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
+import ua.edu.ukma.model.defense.DefenseManager;
+import ua.edu.ukma.model.defense.DefenseStructure;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,7 +18,11 @@ import java.util.Random;
 
 public class Enemy extends Entity {
     private final int enemyType;
-
+    protected SpriteAnimation attackAnimation; // Анімація удару
+    private boolean isAttacking = false;
+    private long lastAttackTime = 0;
+    private static final long ATTACK_COOLDOWN_MS = 1000;
+    private final int damage;
     protected GameMap gameMap;
     protected int tileSize;
     protected double velocityX;
@@ -33,8 +38,9 @@ protected Direction currentDir;
     protected SpriteAnimation deathAnimation;
     protected boolean isDying = false;
 
-    public Enemy(double startX, double startY, double speed, int maxHealth, int type, String spriteSheetPath, GameMap gameMap, int tileSize) {
+    public Enemy(double startX, double startY, double speed, int damage, int maxHealth, int type, String spriteSheetPath, GameMap gameMap, int tileSize) {
         super(startX, startY, speed, maxHealth);
+        this.damage=damage;
         this.enemyType = type;
         this.gameMap = gameMap;
         this.tileSize = tileSize;
@@ -50,12 +56,15 @@ protected Direction currentDir;
 
     @Override
     public void update() {
+
+    }
+    public void update(DefenseManager defenseManager){
         if (!active) return;
         if (!isDying) {
             if (currentPath == null)
                 calculatePath();
             if (currentPath != null && currentPathIndex < currentPath.size())
-                moveToNextNode();
+                moveToNextNode(defenseManager);
             else if (currentPath != null && currentPathIndex >= currentPath.size())
                 reachTower();
             imageView.setX(x);
@@ -102,23 +111,28 @@ protected Direction currentDir;
         CellPosition start = new CellPosition(getCurrentRow(), getCurrentCol());
         CellPosition towerPos = gameMap.findFirst(CellType.TOWER);
         currentPath = PathFinder.findPath(gameMap, start, towerPos);
-
         currentPathIndex = 1;
-      //  System.out.println(currentPath);
     }
 
-    private void moveToNextNode() {
+    private void moveToNextNode(DefenseManager defenseManager) {
         CellPosition targetCell = currentPath.get(currentPathIndex);
+        DefenseStructure defense = defenseManager.getDefenseAt(targetCell.row(), targetCell.col());
+
+        if (defense != null && defenseManager.isAttackable(defense.getType())) {
+            isAttacking = true;
+            attackDefense(defense);
+            return;
+        }
+        isAttacking = false;
+        playAnimation(walkAnimation);
 
         double targetX = targetCell.col() * tileSize;
         double targetY = targetCell.row() * tileSize;
-
         double dx = targetX - x;
         double dy = targetY - y;
-        if (dx > 0)
-            imageView.setScaleX(1);
-        else if (dx < 0)
-            imageView.setScaleX(-1);
+
+        if (dx > 0) imageView.setScaleX(1);
+        else if (dx < 0) imageView.setScaleX(-1);
 
         double distance = Math.sqrt(dx * dx + dy * dy);
 
@@ -134,7 +148,8 @@ protected Direction currentDir;
 
     private void reachTower() {
         this.reachedTower = true;
-        onDeath();
+        playAnimation(attackAnimation);
+        attackAnimation.setOnFinished(e->super.onDeath());
     }
 
     public boolean isReachedTower() {
@@ -165,5 +180,33 @@ protected Direction currentDir;
 
     private int getCurrentCol() {
         return (int) ((x + tileSize / 2.0) / tileSize);
+    }
+    private void attackDefense(DefenseStructure defense) {
+        playAnimation(attackAnimation);
+
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime - lastAttackTime >= ATTACK_COOLDOWN_MS) {
+            defense.takeDamage(damage);
+            lastAttackTime = currentTime;
+            System.out.println("Enemy is damaging "+defense.getType().getName());
+        }
+    }
+    protected void loadAnimations() {
+        walkAnimation = new SpriteAnimation(
+                imageView, Duration.millis(600),
+                6, 3, 0, 0, 48, 48
+        );
+        walkAnimation.setCycleCount(Animation.INDEFINITE);
+        deathAnimation = new SpriteAnimation(
+                imageView, Duration.millis(800),
+                9, 3, 0, 96, 48, 48
+        );
+        deathAnimation.setCycleCount(1);
+        attackAnimation = new SpriteAnimation(
+                imageView, Duration.millis(600),
+                6, 3, 0, 240, 48, 48
+        );
+        attackAnimation.setCycleCount(1);
     }
 }

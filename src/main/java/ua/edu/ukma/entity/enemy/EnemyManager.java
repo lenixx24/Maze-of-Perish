@@ -6,6 +6,7 @@ import ua.edu.ukma.entity.Entity;
 import ua.edu.ukma.model.CellPosition;
 import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
+import ua.edu.ukma.model.defense.DefenseManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,13 +21,15 @@ public class EnemyManager {
     private final List<CellPosition> spawnPoints;
     private final Random random;
     private final int tileSize;
-    public EnemyManager(Pane gamePane, GameMap gameMap, int tileSize) {
+    private final DefenseManager defenseManager;
+    public EnemyManager(Pane gamePane, GameMap gameMap, int tileSize, DefenseManager defenseManager) {
         this.gamePane = gamePane;
         this.enemies = new ArrayList<>();
         this.gameMap=gameMap;
         this.spawnPoints = new ArrayList<>();
         this.random = new Random();
         this.tileSize=tileSize;
+        this.defenseManager=defenseManager;
         findSpawnPoints();
         for(int i=0; i<4; i++){
             spawnEnemy();
@@ -44,8 +47,7 @@ public class EnemyManager {
 
         while (iterator.hasNext()) {
             Enemy enemy = iterator.next();
-            enemy.update();
-
+            enemy.update(defenseManager);
             if (!enemy.isActive()) {
                 if (enemy.isReachedTower())
                     towerHP--;

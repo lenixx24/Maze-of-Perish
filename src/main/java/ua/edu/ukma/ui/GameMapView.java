@@ -55,7 +55,7 @@ public class GameMapView extends Pane {
         this.defenseManager = new DefenseManager();
         this.defenseController = new DefenseController();
         this.defenseRenderer = new DefenseRenderer(this);
-        this.enemyManager=new EnemyManager(this, gameMap, tileSize);
+        this.enemyManager=new EnemyManager(this, gameMap, tileSize, defenseManager);
         this.waveManager=new WaveManager(enemyManager);
         TileMapRenderer renderer = new TileMapRenderer(tileSize);
         Node mapNode = renderer.render(gameMap);

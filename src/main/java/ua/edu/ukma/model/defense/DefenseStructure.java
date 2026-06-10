@@ -65,4 +65,5 @@ public class DefenseStructure {
         this.imageView.setLayoutX(pixelX);
         this.imageView.setLayoutY(pixelY);
     }
+    public void takeDamage(int amount) { }
 }

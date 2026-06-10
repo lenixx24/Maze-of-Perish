@@ -160,7 +160,21 @@ public class DefenseManager {
         }
         return false;
     }
-
+    public DefenseStructure getDefenseAt (int row, int col) {
+        for (DefenseStructure d : activeDefenses) {
+            if (d.getRow() == row && d.getCol() == col) {
+                return d;
+            }
+        }
+        return null;
+    }
+    public boolean isAttackable(DefenseType defenseType){
+            return defenseType.equals(DefenseType.BARRIER)||
+                    defenseType.equals(DefenseType.TURRET)||
+                    defenseType.equals(DefenseType.SNIPER_TOWER)||
+                    defenseType.equals(DefenseType.LASER_TOWER)||
+                    defenseType.equals(DefenseType.CANNON_TOWER);
+    }
     public boolean hasDefenseExcept(int row, int col, DefenseStructure excludedDefense, EffectZone currentZone) {
         return true;
     }
