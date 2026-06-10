@@ -6,6 +6,7 @@ import javafx.scene.image.ImageView;
 import ua.edu.ukma.entity.enemy.Enemy;
 import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,65 +36,83 @@ public class EffectZone extends DefenseStructure {
         this.viewGroup.getChildren().add(mainView);
 
         Image zoneTexture = new Image(zoneTexturePath);
-        for (int[] dir : DIRECTIONS) {
-            zoneOffsets.add(dir);
-            ImageView zv = new ImageView(zoneTexture);
-            zv.setSmooth(false);
-            this.zoneViews.add(zv);
-            this.viewGroup.getChildren().add(zv);
+
+        for (int[] direction : DIRECTIONS) {
+            zoneOffsets.add(direction);
+
+            ImageView zoneView = new ImageView(zoneTexture);
+            zoneView.setSmooth(false);
+
+            zoneViews.add(zoneView);
+            viewGroup.getChildren().add(zoneView);
         }
-    }
-    public boolean isValidZoneTile(int targetRow, int targetCol, GameMap gameMap, DefenseManager defenseManager) {
-        boolean isInside = gameMap.isInside(targetRow, targetCol);
-        if (!isInside) return false;
-
-        boolean isWalkable = gameMap.getCell(targetRow, targetCol) != CellType.WALL &&
-                gameMap.getCell(targetRow, targetCol) != CellType.SPAWN &&
-                gameMap.getCell(targetRow, targetCol) != CellType.TOWER;
-
-        boolean isFarEnough = defenseManager.canPlaceZoneAt(targetRow, targetCol, this);
-        boolean isTileFree = defenseManager.hasDefenseExcept(targetRow, targetCol, this, this);
-
-        return isWalkable && isFarEnough && isTileFree;
-    }
-
-    public boolean coversTile(int targetRow, int targetCol, GameMap gameMap, DefenseManager defenseManager) {
-        if (this.getRow() == targetRow && this.getCol() == targetCol) {
-            return true;
-        }
-
-        for (int[] dir : DIRECTIONS) {
-            int r = this.getRow() + dir[0];
-            int c = this.getCol() + dir[1];
-            if (r == targetRow && c == targetCol) {
-                return isValidZoneTile(r, c, gameMap, defenseManager);
-            }
-        }
-        return false;
     }
 
     public Group getViewGroup(GameMap gameMap, int tileSize, DefenseManager defenseManager) {
-        this.mainView.setFitWidth(tileSize);
-        this.mainView.setFitHeight(tileSize);
-        this.mainView.setX(getCol() * tileSize);
-        this.mainView.setY(getRow() * tileSize);
+        mainView.setFitWidth(tileSize);
+        mainView.setFitHeight(tileSize);
+        mainView.setX(getCol() * tileSize);
+        mainView.setY(getRow() * tileSize);
 
         for (int i = 0; i < zoneViews.size(); i++) {
-            ImageView zv = zoneViews.get(i);
+            ImageView zoneView = zoneViews.get(i);
             int[] offset = zoneOffsets.get(i);
             int targetRow = getRow() + offset[0];
             int targetCol = getCol() + offset[1];
-            if (isValidZoneTile(targetRow, targetCol, gameMap, defenseManager)) {
-                zv.setVisible(true);
-                zv.setFitWidth(tileSize);
-                zv.setFitHeight(tileSize);
-                zv.setX(targetCol * tileSize);
-                zv.setY(targetRow * tileSize);
+            if (isDrawableZoneTile(targetRow, targetCol, offset[0], offset[1], gameMap)) {
+                zoneView.setVisible(true);
+                zoneView.setFitWidth(tileSize);
+                zoneView.setFitHeight(tileSize);
+                zoneView.setX(targetCol * tileSize);
+                zoneView.setY(targetRow * tileSize);
             } else {
-                zv.setVisible(false);
+                zoneView.setVisible(false);
             }
         }
         return viewGroup;
+    }
+
+    private boolean isDrawableZoneTile(int targetRow, int targetCol, int rowOffset, int colOffset, GameMap gameMap) {
+        if (!gameMap.isInside(targetRow, targetCol)) return false;
+        if (isBlockedCell(targetRow, targetCol, gameMap)) return false;
+        if (isDiagonal(rowOffset, colOffset) && isDiagonalBlockedByWalls(rowOffset, colOffset, gameMap)) return false;
+        return true;
+    }
+
+    private boolean isBlockedCell(int row, int col, GameMap gameMap) {
+        CellType cellType = gameMap.getCell(row, col);
+        return cellType == CellType.WALL || cellType == CellType.SPAWN || cellType == CellType.TOWER;
+    }
+
+    private boolean isDiagonal(int rowOffset, int colOffset) {
+        return Math.abs(rowOffset) == 1 && Math.abs(colOffset) == 1;
+    }
+
+    private boolean isDiagonalBlockedByWalls(int rowOffset, int colOffset, GameMap gameMap) {
+        int sideRow = getRow() + rowOffset;
+        int sideCol = getCol();
+
+        int verticalRow = getRow();
+        int verticalCol = getCol() + colOffset;
+
+        boolean horizontalSideBlocked = isBlockedCell(sideRow, sideCol, gameMap);
+        boolean verticalSideBlocked = isBlockedCell(verticalRow, verticalCol, gameMap);
+
+        return horizontalSideBlocked && verticalSideBlocked;
+    }
+
+    public boolean coversTile(int targetRow, int targetCol, GameMap gameMap, DefenseManager defenseManager) {
+        if (getRow() == targetRow && getCol() == targetCol) return true;
+
+        for (int[] offset : DIRECTIONS) {
+            int row = getRow() + offset[0];
+            int col = getCol() + offset[1];
+            if (row == targetRow && col == targetCol) {
+                return isDrawableZoneTile(row, col, offset[0], offset[1], gameMap);
+            }
+        }
+
+        return false;
     }
 
     public void updateLifetime(double deltaTime) {
