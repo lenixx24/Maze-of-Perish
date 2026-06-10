@@ -31,6 +31,7 @@ public class GameMapView extends Pane {
     private final DefenseManager defenseManager;
     private final DefenseController defenseController;
     private final DefenseRenderer defenseRenderer;
+    private final PlacementHighlighter placementHighlighter;
 
     private final EnemyManager enemyManager;
     private final WaveManager waveManager;
@@ -56,6 +57,7 @@ this.topPanel=topPanel;
         this.defenseController = new DefenseController();
         this.defenseRenderer = new DefenseRenderer(this);
         this.enemyManager=new EnemyManager(this, gameMap, tileSize, defenseManager);
+        this.placementHighlighter = new PlacementHighlighter();
         this.waveManager=new WaveManager(enemyManager);
         TileMapRenderer renderer = new TileMapRenderer(tileSize);
         Node mapNode = renderer.render(gameMap);
@@ -73,7 +75,7 @@ this.topPanel=topPanel;
                 tileSize
         );
 
-        getChildren().addAll(mapNode, player.getView());
+        getChildren().addAll(mapNode, placementHighlighter.getView(), player.getView());
 
         setPrefSize(gameMap.cols() * tileSize, gameMap.rows() * tileSize);
 
@@ -87,15 +89,17 @@ this.topPanel=topPanel;
 
         setOnMouseClicked(event -> {
             requestFocus();
-            defenseController.buildDefense(event.getX(), event.getY(), getWidth(), getHeight(), gameMap, defenseManager, player,manaManager);
+            defenseController.buildDefense(event.getX(), event.getY(), getWidth(), getHeight(), gameMap, defenseManager, player, manaManager);
         });
 
         setOnKeyPressed(event -> {
-            Optional.ofNullable(controls.get(event.getCode())).ifPresent(player::move);
+            Optional.ofNullable(controls.get(event.getCode())).ifPresent(direction -> {
+                player.move(direction);
+                placementHighlighter.clear();
+            });
             defenseController.handle(event.getCode());
-            if (event.getCode() == KeyCode.ENTER)
-                waveManager.startWaveEarly();
 
+            if (event.getCode() == KeyCode.ENTER) waveManager.startWaveEarly();
         });
 
         startGameLoop();
@@ -118,6 +122,7 @@ this.topPanel=topPanel;
                 int size = GameScaleConfig.calculateTileSize(gameMap.rows(), gameMap.cols(), getWidth(), getHeight());
                 defenseManager.updateDefenses(gameMap, enemyManager.getEnemies(), size, 0.010);
                 defenseRenderer.render(gameMap, defenseManager, size);
+                placementHighlighter.render(gameMap, defenseManager, player, size, defenseController.getSelectedType());
                 player.getView().toFront();
             }
         };
