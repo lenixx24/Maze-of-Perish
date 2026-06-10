@@ -15,6 +15,7 @@ import ua.edu.ukma.model.GameMap;
 import ua.edu.ukma.model.defense.DefenseManager;
 import ua.edu.ukma.renderer.DefenseRenderer;
 import ua.edu.ukma.renderer.TileMapRenderer;
+import ua.edu.ukma.resource.ManaManager;
 
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +26,7 @@ public class GameMapView extends Pane {
 
     private final GameMap gameMap;
     private final Player player;
+    private final ManaManager manaManager=new ManaManager(100,100,10);
 
     private final DefenseManager defenseManager;
     private final DefenseController defenseController;
@@ -85,7 +87,7 @@ public class GameMapView extends Pane {
 
         setOnMouseClicked(event -> {
             requestFocus();
-            defenseController.buildDefense(event.getX(), event.getY(), getWidth(), getHeight(), gameMap, defenseManager, player);
+            defenseController.buildDefense(event.getX(), event.getY(), getWidth(), getHeight(), gameMap, defenseManager, player,manaManager);
         });
 
         setOnKeyPressed(event -> {
@@ -108,6 +110,7 @@ public class GameMapView extends Pane {
                         this.stop();
                 }
                 waveManager.update(0.010);
+                manaManager.regenerate(0.01);
                 int size = GameScaleConfig.calculateTileSize(gameMap.rows(), gameMap.cols(), getWidth(), getHeight());
                 defenseManager.updateDefenses(gameMap, enemyManager.getEnemies(), size, 0.010);
                 defenseRenderer.render(gameMap, defenseManager, size);

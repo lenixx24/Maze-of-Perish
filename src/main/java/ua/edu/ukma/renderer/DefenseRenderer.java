@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import ua.edu.ukma.model.GameMap;
+import ua.edu.ukma.model.defense.AttackTower;
 import ua.edu.ukma.model.defense.DefenseManager;
 import ua.edu.ukma.model.defense.DefenseStructure;
 import ua.edu.ukma.model.defense.type.*;
@@ -30,8 +31,8 @@ public class DefenseRenderer {
         views.keySet().removeIf(defense -> {
             if (!defenseManager.getActiveDefenses().contains(defense)) {
                 gamePane.getChildren().remove(views.get(defense));
-                if (defense instanceof Turret turret) {
-                    turret.getBullets().forEach(Turret.FxBullet::removeView);
+                if (defense instanceof AttackTower tower) {
+                    tower.getBullets().forEach(Turret.FxBullet::removeView);
                 }
                 return true;
             }
@@ -88,7 +89,7 @@ public class DefenseRenderer {
                 continue;
             }
             if (defense instanceof Freeze freeze) {
-                Group currentGroup = freeze.getViewGroup(gameMap, tileSize);
+                Group currentGroup = freeze.getViewGroup(gameMap, tileSize, defenseManager);
 
                 if (!gamePane.getChildren().contains(currentGroup)) {
                     if (gamePane.getChildren().size() > 1) {
@@ -102,7 +103,7 @@ public class DefenseRenderer {
                 continue;
             }
             if (defense instanceof Poison poison) {
-                Group currentGroup = poison.getViewGroup(gameMap, tileSize);
+                var currentGroup = poison.getViewGroup(gameMap, tileSize,  defenseManager);
 
                 if (!gamePane.getChildren().contains(currentGroup)) {
                     if (gamePane.getChildren().size() > 1) {

@@ -8,6 +8,7 @@ import ua.edu.ukma.model.GameMap;
 import ua.edu.ukma.model.defense.DefenseManager;
 import ua.edu.ukma.model.defense.DefenseType;
 import ua.edu.ukma.model.defense.type.*;
+import ua.edu.ukma.resource.ManaManager;
 
 import java.util.Map;
 import java.util.Optional;
@@ -36,10 +37,13 @@ public class DefenseController {
     }
 
     public void buildDefense(double clickX, double clickY, double availableWidth, double availableHeight,
-                             GameMap gameMap, DefenseManager defenseManager, Player player) {
+                             GameMap gameMap, DefenseManager defenseManager, Player player, ManaManager manaManager) {
 
         if (selectedType == null) return;
         if (player.isMoving()) return;
+        if (manaManager.getMana() < selectedType.manaCost()) {
+            return;
+        }
 
         int tileSize = GameScaleConfig.calculateTileSize(gameMap.rows(), gameMap.cols(), availableWidth, availableHeight);
         int targetCol = (int) (clickX / tileSize);
@@ -74,18 +78,25 @@ public class DefenseController {
             case CANNON_TOWER  -> defenseManager.addDefense(new Cannon(targetRow, targetCol));
             default -> { return; }
         }
+        manaManager.decreaseMana(selectedType.manaCost());
         resetSelection();
     }
     private boolean putDefense(int row, int col, DefenseType type, GameMap gameMap, DefenseManager defenseManager) {
-        if (defenseManager.hasDefense(row, col)) {
+        if (defenseManager.hasDefense(row, col, gameMap, type)) {
             return false;
         }
 
         CellType cellType = gameMap.getCell(row, col);
-        if (cellType == CellType.WALL || cellType == CellType.SPAWN || cellType == CellType.TOWER ) {
+        if (cellType == CellType.WALL || cellType == CellType.SPAWN || cellType == CellType.TOWER) {
             return false;
         }
-        return !defenseManager.hasDefense(row, col);
+        if (type == DefenseType.FREEZE || type == DefenseType.POISON_CLOUD) {
+            for (ua.edu.ukma.model.defense.DefenseStructure d : defenseManager.getActiveDefenses()) {
+                if (DefenseManager.ZoneDist(row, col, d)) return false;
+            }
+        }
+
+        return true;
     }
 
     public DefenseType getSelectedType() {

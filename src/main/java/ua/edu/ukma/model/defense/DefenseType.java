@@ -5,31 +5,31 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 
 public enum DefenseType {
-    @DefenseTexture(value = "/defense/trap.png", name = "Trap")
+    @DefenseTexture(value = "/defense/trap.png", name = "Trap", manaCost = 15)
     TRAP(4),
 
-    @DefenseTexture(value = "/defense/bomb.png", name = "Bomb")
+    @DefenseTexture(value = "/defense/bomb.png", name = "Bomb", manaCost = 35)
     BOMB(5),
 
-    @DefenseTexture(value = "/defense/turret.png", name = "Turret")
+    @DefenseTexture(value = "/defense/turret.png", name = "Turret", manaCost = 30)
     TURRET(6),
 
-    @DefenseTexture(value = "/defense/freeze.png", name = "Freeze")
+    @DefenseTexture(value = "/defense/freeze.png", name = "Freeze", manaCost = 30)
     FREEZE(7),
 
-    @DefenseTexture(value = "/defense/poison.png", name = "Poison Cloud")
+    @DefenseTexture(value = "/defense/poison.png", name = "Poison Cloud", manaCost = 50)
     POISON_CLOUD(8),
 
-    @DefenseTexture(value = "/defense/barrier.png", name = "Barrier")
+    @DefenseTexture(value = "/defense/barrier.png", name = "Barrier", manaCost = 20)
     BARRIER(9),
 
-    @DefenseTexture(value = "/defense/sniper.png", name = "Sniper Tower")
+    @DefenseTexture(value = "/defense/sniper.png", name = "Sniper Tower", manaCost = 70)
     SNIPER_TOWER(10),
 
-    @DefenseTexture(value = "/defense/laser.png", name = "Laser Tower")
+    @DefenseTexture(value = "/defense/laser.png", name = "Laser Tower", manaCost = 60)
     LASER_TOWER(11),
 
-    @DefenseTexture(value = "/defense/cannon.png", name = "Cannon Tower")
+    @DefenseTexture(value = "/defense/cannon.png", name = "Cannon Tower", manaCost = 90)
     CANNON_TOWER(12);
 
     private final int code;
@@ -60,5 +60,8 @@ public enum DefenseType {
     }
     public String getName() {
         return getAnnotation().name();
+    }
+    public int manaCost() {
+        return getAnnotation().manaCost();
     }
 }

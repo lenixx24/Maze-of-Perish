@@ -10,4 +10,5 @@ import java.lang.annotation.ElementType;
 public @interface DefenseTexture {
     String value();
     String name();
+    int manaCost();
 }
