@@ -3,6 +3,8 @@ package ua.edu.ukma.ui;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -11,8 +13,14 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import ua.edu.ukma.entity.enemy.WaveManager;
 
+import java.util.Objects;
+
 public class TopPanelView extends HBox {
 
+    private final HBox heartsContainer;
+    private final Image fullHeartImg;
+    private final Image emptyHeartImg;
+    private final int MAX_HEARTS = 5;
     private final Label waveLabel;
     private final Label timerLabel;
     private final Button helpButton;
@@ -33,6 +41,18 @@ public class TopPanelView extends HBox {
         Region rightSpacer = new Region();
         HBox.setHgrow(rightSpacer, Priority.ALWAYS);
 
+        fullHeartImg = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/interface/heart.png")));
+        emptyHeartImg = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/interface/empty-heart.png")));
+
+        heartsContainer = new HBox(5);
+        heartsContainer.setAlignment(Pos.CENTER_LEFT);
+
+        for (int i = 0; i < MAX_HEARTS; i++) {
+            ImageView heartView = new ImageView(fullHeartImg);
+            heartView.setFitWidth(32);
+            heartView.setFitHeight(32);
+            heartsContainer.getChildren().add(heartView);
+        }
         waveLabel = createStyledLabel("Wave: 1");
         setAlignment(Pos.CENTER);
         setSpacing(17);
@@ -50,8 +70,7 @@ public class TopPanelView extends HBox {
                 );
             }
         });
-
-        getChildren().addAll(leftSpacer, waveLabel, timerLabel, rightSpacer, helpButton);
+        getChildren().addAll(heartsContainer, leftSpacer, waveLabel, timerLabel, rightSpacer, helpButton);
     }
 
     private Label createStyledLabel(String defaultText) {
@@ -61,9 +80,16 @@ public class TopPanelView extends HBox {
         return label;
     }
 
-    public void update(WaveManager waveManager) {
-        waveLabel.setText("Wave: " + waveManager.getCurrentWave());
-
+    public void update(WaveManager waveManager, int currentHearts) {
+        for (int i = 0; i < MAX_HEARTS; i++) {
+            ImageView heartView = (ImageView) heartsContainer.getChildren().get(i);
+            if (i < currentHearts) {
+                heartView.setImage(fullHeartImg);
+            } else {
+                heartView.setImage(emptyHeartImg);
+            }
+        }
+        waveLabel.setText("Wave: " + waveManager.getCurrentWave() + "/" + waveManager.MAX_WAVES);
         if (waveManager.isPreparationPhase()) {
             timerLabel.setText(String.format("Preparation: %.1fс", waveManager.getPrepTimer()));
             timerLabel.setTextFill(Color.YELLOW);

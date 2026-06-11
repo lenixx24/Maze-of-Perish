@@ -151,7 +151,7 @@ this.topPanel=topPanel;
                         this.stop();
                 }
                 waveManager.update(0.010);
-                topPanel.update(waveManager);
+                topPanel.update(waveManager, enemyManager.towerHP);
                 manaManager.regenerate(0.01);
                 if (cardPane != null) {
                     cardPane.updateUI();

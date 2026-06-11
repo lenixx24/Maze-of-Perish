@@ -4,7 +4,7 @@ public class WaveManager {
 
     private final EnemyManager enemyManager;
     private int currentWave = 0;
-    private final int MAX_WAVES = 5;
+    public final int MAX_WAVES = 5;
     private final double PREP_TIME_SECONDS = 15.0;
 
     private boolean isPreparationPhase = true;

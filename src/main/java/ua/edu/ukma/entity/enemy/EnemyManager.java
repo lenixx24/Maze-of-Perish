@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Random;
 
 public class EnemyManager {
-    public int towerHP=100; //later will be moved to tower
+    public int towerHP=5;
     private final List<Enemy> enemies;
     private final Pane gamePane;
     private final GameMap gameMap;
