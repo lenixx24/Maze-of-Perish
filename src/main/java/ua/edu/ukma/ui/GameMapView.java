@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public class GameMapView extends Pane {
-
     private final int tileSize;
     private final TopPanelView topPanel;
     private final GameMap gameMap;
@@ -62,8 +61,14 @@ this.topPanel=topPanel;
         this.defenseController = new DefenseController();
         this.defenseRenderer = new DefenseRenderer(this);
         this.enemyManager=new EnemyManager(this, gameMap, tileSize, defenseManager);
+
         this.placementHighlighter = new PlacementHighlighter();
         this.waveManager=new WaveManager(enemyManager);
+        this.waveManager.setOnVictory(() -> {
+            pauseGame();
+            VictoryWindow victoryWindow = new VictoryWindow();
+            victoryWindow.show();
+        });
         this.cardPane = new CardPane(defenseController, cardManager, manaManager, this);
         TileMapRenderer renderer = new TileMapRenderer(tileSize);
         Node mapNode = renderer.render(gameMap);

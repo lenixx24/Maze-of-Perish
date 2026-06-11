@@ -1,10 +1,12 @@
 package ua.edu.ukma.entity.enemy;
 
-public class WaveManager {
+import ua.edu.ukma.ui.VictoryWindow;
 
+public class WaveManager {
+    private Runnable onVictory;
     private final EnemyManager enemyManager;
     private int currentWave = 0;
-    public final int MAX_WAVES = 5;
+    public final int MAX_WAVES = 1;
     private final double PREP_TIME_SECONDS = 15.0;
 
     private boolean isPreparationPhase = true;
@@ -42,10 +44,12 @@ public class WaveManager {
     }
     private void startPreparationPhase() {
         currentWave++;
-
         if (currentWave > MAX_WAVES) {
-           if(currentWave==MAX_WAVES+1) System.out.println("Win!!");
-           return;
+            System.out.println("Win");
+            currentWave=MAX_WAVES;
+            if (onVictory != null)
+                onVictory.run();
+            return;
         }
 
         isPreparationPhase = true;
@@ -70,4 +74,7 @@ public class WaveManager {
     public int getCurrentWave() { return currentWave; }
     public double getPrepTimer() { return Math.max(0, prepTimer); }
     public boolean isPreparationPhase() { return isPreparationPhase; }
+    public void setOnVictory(Runnable onVictory) {
+        this.onVictory = onVictory;
+    }
 }
