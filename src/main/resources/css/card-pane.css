@@ -62,3 +62,27 @@
 }
 
 .card-label.visible {}
+.help-button {
+    -fx-background-color: #ecc8ad;
+    -fx-text-fill: #2c221b;
+    -fx-border-color: #ffffff #5c4a3e #5c4a3e #ffffff;
+
+
+    -fx-font-weight: bold;
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 35px;
+
+    -fx-border-width: 3px;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-padding: -2px 15px -2px 15px;
+}
+.help-button:hover {
+    -fx-background-color: #3b322c;
+    -fx-text-fill: #f0e6df;
+    -fx-border-color: #5c4e45;
+}
+
+.inst-root {
+    -fx-background-color: rgba(0, 0, 0, 0.75);
+}

@@ -33,7 +33,7 @@ public class PlacementHighlighter {
 
             marker.setFill(Color.rgb(80, 210, 120, 0.32));
             marker.setStroke(Color.rgb(180, 255, 200, 0.9));
-            marker.setStrokeWidth(Math.max(1.0, tileSize * 0.06));
+            marker.setStrokeWidth(0.7);
             marker.setArcWidth(tileSize * 0.25);
             marker.setArcHeight(tileSize * 0.25);
             marker.setMouseTransparent(true);

@@ -38,6 +38,8 @@ public class GameMapView extends Pane {
     private final EnemyManager enemyManager;
     private final WaveManager waveManager;
     private CardPane cardPane;
+    private AnimationTimer gameTimer;
+
     private final Map<KeyCode, Direction> controls = Map.of(
             KeyCode.A, Direction.LEFT,
             KeyCode.LEFT, Direction.LEFT,
@@ -109,6 +111,18 @@ this.topPanel=topPanel;
         startGameLoop();
     }
 
+    public void pauseGame() {
+        if (gameTimer != null) {
+            gameTimer.stop();
+        }
+    }
+
+    public void resumeGame() {
+        if (gameTimer != null) {
+            gameTimer.start();
+        }
+    }
+
     public void setCardPane(CardPane cardPane) {
         this.cardPane = cardPane;
     }
@@ -126,7 +140,7 @@ this.topPanel=topPanel;
     }
 
     private void startGameLoop() {
-        AnimationTimer timer = new AnimationTimer() {
+        gameTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 player.update();
@@ -150,6 +164,6 @@ this.topPanel=topPanel;
             }
         };
 
-        timer.start();
+        gameTimer.start();
     }
 }

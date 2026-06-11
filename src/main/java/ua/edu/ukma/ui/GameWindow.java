@@ -11,6 +11,7 @@ import ua.edu.ukma.config.GameScaleConfig;
 import ua.edu.ukma.config.GameWindowConfig;
 import ua.edu.ukma.map.MazeFactory;
 import ua.edu.ukma.model.GameMap;
+import java.util.Objects;
 
 public class GameWindow {
 
@@ -26,8 +27,10 @@ public class GameWindow {
     public Scene createScene(Stage stage) {
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         Pane root = createRoot(stage, screenBounds);
-        root.setOpacity(0.0);
-        return new Scene(root, screenBounds.getWidth(), screenBounds.getHeight(), BACKGROUND_COLOR);
+        Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight(), BACKGROUND_COLOR);
+        String cssPath = Objects.requireNonNull(getClass().getResource("/css/card-pane.css")).toExternalForm();
+        scene.getStylesheets().add(cssPath);
+        return scene;
     }
 
     public void applyStageSettings(Stage stage) {
@@ -98,26 +101,32 @@ public class GameWindow {
                 availableWidth,
                 availableHeight
         );
-        TopPanelView topPanel = new TopPanelView(screenBounds.getWidth(), config.topPanelHeight());
+
+        InstWindow instWindow = new InstWindow();
+        instWindow.prefWidthProperty().bind(gameArea.widthProperty());
+        instWindow.prefHeightProperty().bind(gameArea.heightProperty());
+        instWindow.setLayoutX(0);
+        instWindow.setLayoutY(0);
+
+        TopPanelView topPanel = new TopPanelView(screenBounds.getWidth(), config.topPanelHeight(), instWindow);
         topPanel.setLayoutX(0);
         topPanel.setLayoutY(0);
 
         GameMapView mapView = new GameMapView(gameMap, tileSize, topPanel);
+        mapView.setLayoutX(0);
+        mapView.setLayoutY(0);
 
-        mapView.layoutXProperty().bind(
-                gameArea.widthProperty()
-                        .subtract(mapView.prefWidth(-1))
-                        .divide(2)
+        mapView.layoutXProperty().bind(gameArea.widthProperty().subtract(mapView.prefWidth(-1)).divide(2));
+        mapView.layoutYProperty().bind(gameArea.heightProperty()
+                .subtract(config.topPanelHeight())
+                .subtract(config.bottomPanelHeight())
+                .subtract(mapView.prefHeight(-1))
+                .divide(2)
+                .add(config.topPanelHeight())
         );
 
-        mapView.layoutYProperty().bind(
-                gameArea.heightProperty()
-                        .subtract(config.topPanelHeight())
-                        .subtract(config.bottomPanelHeight())
-                        .subtract(mapView.prefHeight(-1))
-                        .divide(2)
-                        .add(config.topPanelHeight())
-        );
+        topPanel.setMapView(mapView);
+        instWindow.setMapView(mapView);
 
         CardPane cardPane = new CardPane(
                 mapView.getDefenseController(),
@@ -132,7 +141,7 @@ public class GameWindow {
         cardPane.layoutYProperty().bind(gameArea.heightProperty().subtract(config.bottomPanelHeight()));
         mapView.setCardPane(cardPane);
 
-        gameArea.getChildren().addAll(mapView, topDivider, bottomDivider, topPanel, cardPane);
+        gameArea.getChildren().addAll(mapView, topDivider, bottomDivider, topPanel, cardPane, instWindow);
         return gameArea;
     }
 
