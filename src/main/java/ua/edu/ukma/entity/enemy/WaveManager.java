@@ -6,7 +6,7 @@ public class WaveManager {
     private Runnable onVictory;
     private final EnemyManager enemyManager;
     private int currentWave = 0;
-    public final int MAX_WAVES = 1;
+    public final int MAX_WAVES = 5;
     private final double PREP_TIME_SECONDS = 15.0;
 
     private boolean isPreparationPhase = true;
@@ -14,7 +14,7 @@ public class WaveManager {
     private int enemiesToSpawnThisWave = 0;
     private int enemiesSpawnedSoFar = 0;
     private double spawnIntervalTimer = 0;
-    private final double SPAWN_INTERVAL_SECONDS = 2;
+    private final double SPAWN_INTERVAL_SECONDS = 1;
     private boolean hasStarted=false;
     public WaveManager(EnemyManager enemyManager) {
         this.enemyManager = enemyManager;

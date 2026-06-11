@@ -117,12 +117,14 @@ this.topPanel=topPanel;
     }
 
     public void pauseGame() {
+        enemyManager.stopAllAnimations();
         if (gameTimer != null) {
             gameTimer.stop();
         }
     }
 
     public void resumeGame() {
+        enemyManager.resumeAllAnimations();
         if (gameTimer != null) {
             gameTimer.start();
         }
@@ -151,9 +153,9 @@ this.topPanel=topPanel;
                 player.update();
                 player.updateAnimation(now);
                 if (!enemyManager.update()) {
-                        System.out.println("Lose!!!");
-                        enemyManager.stopAllAnimations();
-                        this.stop();
+                    pauseGame();
+                    GameOverWindow gameOverWindow = new GameOverWindow();
+                    gameOverWindow.show();
                 }
                 waveManager.update(0.010);
                 topPanel.update(waveManager, enemyManager.towerHP);

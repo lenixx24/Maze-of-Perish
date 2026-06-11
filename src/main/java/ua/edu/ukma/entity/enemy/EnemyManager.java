@@ -92,9 +92,12 @@ public class EnemyManager {
         enemies.clear();
     }
     public void stopAllAnimations(){
-        for (Entity enemy : enemies) {
+        for (Entity enemy : enemies)
             enemy.getCurrentAnimation().stop();
         }
+    public void resumeAllAnimations(){
+        for (Entity enemy : enemies)
+            enemy.getCurrentAnimation().play();
     }
 
     public List<Enemy> getEnemies() {

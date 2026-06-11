@@ -156,7 +156,7 @@ protected Direction currentDir;
         return reachedTower;
     }
 
-    protected void playAnimation(SpriteAnimation newAnimation) {
+    public void playAnimation(SpriteAnimation newAnimation) {
         if (currentAnimation != null) {
             if(currentAnimation.equals(newAnimation)) return;
             currentAnimation.stop();
