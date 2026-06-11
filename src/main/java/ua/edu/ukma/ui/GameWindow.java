@@ -15,7 +15,7 @@ import ua.edu.ukma.model.GameMap;
 public class GameWindow {
 
     private static final Color BACKGROUND_COLOR = Color.rgb(24, 24, 32);
-    private static final Color BORDER_COLOR = Color.rgb(120, 120, 140);
+    private static final Color BORDER_COLOR = Color.rgb(74, 59, 50);
 
     private final GameWindowConfig config;
 
@@ -119,7 +119,20 @@ public class GameWindow {
                         .add(config.topPanelHeight())
         );
 
-        gameArea.getChildren().addAll(mapView, topDivider, bottomDivider, topPanel);
+        CardPane cardPane = new CardPane(
+                mapView.getDefenseController(),
+                mapView.getCardManager(),
+                mapView.getManaManager(),
+                mapView
+        );
+
+        cardPane.setPrefWidth(screenBounds.getWidth());
+        cardPane.setPrefHeight(config.bottomPanelHeight());
+        cardPane.setLayoutX(0);
+        cardPane.layoutYProperty().bind(gameArea.heightProperty().subtract(config.bottomPanelHeight()));
+        mapView.setCardPane(cardPane);
+
+        gameArea.getChildren().addAll(mapView, topDivider, bottomDivider, topPanel, cardPane);
         return gameArea;
     }
 

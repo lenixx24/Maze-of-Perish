@@ -7,6 +7,7 @@ import ua.edu.ukma.model.GameMap;
 import ua.edu.ukma.model.defense.DefenseManager;
 import ua.edu.ukma.model.defense.DefenseType;
 import ua.edu.ukma.model.defense.type.*;
+import ua.edu.ukma.resource.CardManager;
 import ua.edu.ukma.resource.ManaManager;
 
 import java.util.Map;
@@ -27,19 +28,36 @@ public class DefenseController {
     );
 
     private DefenseType selectedType = null;
+    private int selectedCardIndex = -1;
 
     public void handle(KeyCode code) {
         Optional.ofNullable(defenseControls.get(code))
                 .ifPresent(type -> {
-                    this.selectedType = type;
+                    if (this.selectedType == type) {
+                        resetSelection();
+                    } else {
+                        this.selectedType = type;
+                        this.selectedCardIndex = type.ordinal();
+                    }
                 });
     }
 
+    public void selectCard(int index, DefenseType type) {
+        this.selectedType = type;
+        this.selectedCardIndex = index;
+    }
+
     public void buildDefense(double clickX, double clickY, double availableWidth, double availableHeight,
-                             GameMap gameMap, DefenseManager defenseManager, Player player, ManaManager manaManager) {
+                             GameMap gameMap, DefenseManager defenseManager, Player player, ManaManager manaManager, CardManager cardManager) {
 
         if (selectedType == null) return;
         if (player.isMoving()) return;
+
+        if (selectedCardIndex != -1 && cardManager.getCardAmount(selectedCardIndex) <= 0) {
+            resetSelection();
+            return;
+        }
+
         if (manaManager.getMana() < selectedType.manaCost()) {
             return;
         }
@@ -68,6 +86,11 @@ public class DefenseController {
             case CANNON_TOWER  -> defenseManager.addDefense(new Cannon(targetRow, targetCol));
             default -> { return; }
         }
+
+        if (selectedCardIndex != -1) {
+            cardManager.useCard(selectedCardIndex);
+        }
+
         manaManager.decreaseMana(selectedType.manaCost());
         resetSelection();
     }
@@ -78,5 +101,6 @@ public class DefenseController {
 
     public void resetSelection() {
         this.selectedType = null;
+        this.selectedCardIndex = -1;
     }
 }

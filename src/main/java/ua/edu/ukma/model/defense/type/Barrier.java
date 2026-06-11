@@ -6,6 +6,6 @@ import ua.edu.ukma.model.defense.DefenseType;
 public class Barrier extends BarrierZone {
 
     public Barrier(int row, int col) {
-        super(row, col, DefenseType.BARRIER, 100, 25.0);
+        super(row, col, DefenseType.BARRIER, 35, 25.0);
     }
 }

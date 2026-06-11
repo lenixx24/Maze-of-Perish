@@ -9,12 +9,24 @@ import java.util.*;
 public class DefenseManager {
 
     private final List<DefenseStructure> activeDefenses = new ArrayList<>();
-    private final Map<Enemy, Double> frozenEnemies = new HashMap<>();
+    private final Map<Enemy, Double> originalSpeeds = new HashMap<>();
 
     public void updateDefenses(GameMap gameMap, List<Enemy> activeEnemies, int tileSize, double deltaTime) {
-        frozenEnemies.keySet().removeIf(enemy -> !activeEnemies.contains(enemy) || !enemy.isActive());
-        Iterator<DefenseStructure> iterator = activeDefenses.iterator();
+        originalSpeeds.keySet().removeIf(enemy -> !activeEnemies.contains(enemy) || !enemy.isActive());
 
+        for (Enemy enemy : activeEnemies) {
+            if (enemy.isActive() && !originalSpeeds.containsKey(enemy)) {
+                originalSpeeds.put(enemy, enemy.getSpeed());
+            }
+        }
+
+        for (Enemy enemy : activeEnemies) {
+            if (enemy.isActive()) {
+                enemy.setSpeed(originalSpeeds.get(enemy));
+            }
+        }
+
+        Iterator<DefenseStructure> iterator = activeDefenses.iterator();
         while (iterator.hasNext()) {
             DefenseStructure defense = iterator.next();
 
@@ -38,11 +50,10 @@ public class DefenseManager {
                 tower.updateTower(activeEnemies, gameMap, tileSize, deltaTime);
                 if (tower instanceof Turret) {
                     if (tower.isDestroyed()) {
-                        onSolidStructureDestroyed(tower, activeEnemies, tileSize);
                         for (AttackTower.FxBullet bullet : tower.bullets) bullet.removeView();
                         iterator.remove();
                     }
-                }else if (tower.isDestroyed()) {
+                } else if (tower.isDestroyed()) {
                     for (AttackTower.FxBullet bullet : tower.bullets) bullet.removeView();
                     iterator.remove();
                 }
@@ -50,9 +61,6 @@ public class DefenseManager {
             else if (defense instanceof EffectZone zone) {
                 zone.updateLifetime(deltaTime);
                 if (zone.isExpired()) {
-                    if (zone instanceof Freeze) {
-                        restoreSpeedForZone(zone, activeEnemies, tileSize);
-                    }
                     iterator.remove();
                     continue;
                 }
@@ -63,7 +71,6 @@ public class DefenseManager {
                 handleSolidStructureContact(barrier, activeEnemies, tileSize);
 
                 if (barrier.isDestroyed()) {
-                    onSolidStructureDestroyed(barrier, activeEnemies, tileSize);
                     iterator.remove();
                 }
             }
@@ -73,21 +80,10 @@ public class DefenseManager {
     private void handleSolidStructureContact(DefenseStructure structure, List<Enemy> activeEnemies, int tileSize) {
         for (Enemy enemy : activeEnemies) {
             if (enemy.isActive() && isEnemyOnStructureTile(enemy, structure, tileSize)) {
-                if (!frozenEnemies.containsKey(enemy)) {
-                    frozenEnemies.put(enemy, enemy.getSpeed());
-                }
-                enemy.setSpeed(enemy.getSpeed() * 0.9);
+                enemy.setSpeed(enemy.getSpeed() * 0.05);
 
                 if (structure instanceof AttackTower tower) tower.takeDamage(1);
                 else if (structure instanceof BarrierZone barrier) barrier.takeDamage(1);
-            }
-        }
-    }
-
-    private void onSolidStructureDestroyed(DefenseStructure structure, List<Enemy> activeEnemies, int tileSize) {
-        for (Enemy enemy : activeEnemies) {
-            if (isEnemyOnStructureTile(enemy, structure, tileSize)) {
-                restoreEnemySpeed(enemy);
             }
         }
     }
@@ -105,26 +101,8 @@ public class DefenseManager {
                     enemy.takeDamage((int) (zone.getDamagePerSecond() * deltaTime));
                 }
                 if (zone instanceof Freeze) {
-                    if (!frozenEnemies.containsKey(enemy)) {
-                        frozenEnemies.put(enemy, enemy.getSpeed());
-                    }
                     enemy.setSpeed(enemy.getSpeed() * 0.3);
                 }
-            } else if (zone instanceof Freeze) {
-                boolean insideAnotherFreeze = activeDefenses.stream()
-                        .filter(d -> d != zone && d instanceof Freeze && !((Freeze) d).isExpired())
-                        .anyMatch(f -> ((Freeze) f).isEnemyInRange(enemy, tileSize));
-                if (!insideAnotherFreeze) {
-                    restoreEnemySpeed(enemy);
-                }
-            }
-        }
-    }
-
-    private void restoreSpeedForZone(EffectZone zone, List<Enemy> activeEnemies, int tileSize) {
-        for (Enemy enemy : activeEnemies) {
-            if (enemy.isActive() && zone.isEnemyInRange(enemy, tileSize)) {
-                restoreEnemySpeed(enemy);
             }
         }
     }
@@ -137,13 +115,6 @@ public class DefenseManager {
                 triggerAction.run();
                 break;
             }
-        }
-    }
-
-    private void restoreEnemySpeed(Enemy enemy) {
-        if (frozenEnemies.containsKey(enemy)) {
-            enemy.setSpeed(frozenEnemies.get(enemy));
-            frozenEnemies.remove(enemy);
         }
     }
 

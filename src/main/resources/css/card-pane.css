@@ -1,0 +1,64 @@
+.card-pane {
+    -fx-background-color: rgba(53, 35, 27, 0.9);
+    -fx-padding: 30;
+    -fx-border-color:  #2c221b #2c221b #4a3b32;
+    -fx-border-width: 4px;
+}
+
+.card-container {
+    -fx-pref-width: 85px;
+    -fx-pref-height: 95px;
+}
+
+.card-button {
+    -fx-pref-width: 85px;
+    -fx-pref-height: 65px;
+    -fx-min-width: 85px;
+    -fx-min-height: 65px;
+    -fx-max-width: 85px;
+    -fx-max-height: 65px;
+    -fx-layout-y: 26px;
+
+    -fx-background-color: #ecc8ad;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border-color:  #5c4a3e;
+    -fx-border-width: 4px;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-font-family: "Jersey 10";
+    -fx-font-weight: bold;
+}
+
+.selected-card {
+    -fx-background-color: #5a8f54;
+    -fx-border-color: #8ae080 #385c33 #385c33 #8ae080;
+}
+
+.zero-count {
+    -fx-background-color: #423b38;
+    -fx-border-color: #5c534f #2b2624 #2b2624 #5c534f;
+    -fx-text-fill: #7a716c;
+}
+
+.no-mana {
+    -fx-background-color: #9c4747;
+    -fx-border-color: #cf6767 #692b2b #692b2b #cf6767;
+    -fx-text-fill: #ffbaba;
+}
+
+.card-label {
+    -fx-background-color: #3b322c;
+    -fx-text-fill: #f0e6df;
+    -fx-font-size: 15px;
+    -fx-font-family: "Jersey 10";
+    -fx-font-weight: bold;
+    -fx-padding: 2px 4px 2px 4px;
+    -fx-background-radius: 0;
+    -fx-border-color: #5c4e45;
+    -fx-border-width: 1px;
+    -fx-layout-y: 20px;
+    -fx-opacity: 0.0;
+}
+
+.card-label.visible {}

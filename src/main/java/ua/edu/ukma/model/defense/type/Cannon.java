@@ -10,8 +10,8 @@ public class Cannon extends AttackTower {
     private final double explosionRadius;
 
     public Cannon(int row, int col) {
-        super(row, col, DefenseType.CANNON_TOWER, 1, 200.0, 300.0, 0.8, "/defense/cannon_bullet.png", 400.0);
-        this.explosionRadius = 100.0;
+        super(row, col, DefenseType.CANNON_TOWER, 1, 200.0, 400.0, 0.8, "/defense/cannon_bullet.png", 400.0);
+        this.explosionRadius = 200.0;
     }
 
     @Override

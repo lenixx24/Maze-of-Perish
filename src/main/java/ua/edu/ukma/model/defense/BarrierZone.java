@@ -29,7 +29,7 @@ public class BarrierZone extends DefenseStructure {
         this.mainView.setFitHeight(tileSize);
         this.mainView.setX(getCol() * tileSize);
         this.mainView.setY(getRow() * tileSize);
-
+        this.viewGroup.toFront();
         return viewGroup;
     }
 

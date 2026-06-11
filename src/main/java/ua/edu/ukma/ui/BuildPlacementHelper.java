@@ -30,8 +30,7 @@ public final class BuildPlacementHelper {
         for (Direction direction : Direction.values()) {
             int row = playerRow + direction.rowDelta();
             int col = playerCol + direction.colDelta();
-
-            while (gameMap.isPassable(row, col)) {
+            while (row >= 0 && row < gameMap.rows() && col >= 0 && col < gameMap.cols() && gameMap.isPassable(row, col)) {
                 if (canPlaceOnCell(row, col, selectedType, gameMap, defenseManager)) {
                     availableCells.add(new CellPosition(row, col));
                 }
@@ -45,6 +44,9 @@ public final class BuildPlacementHelper {
     }
 
     public static boolean isAvailableCell(int row, int col, GameMap gameMap, DefenseManager defenseManager, Player player, int tileSize, DefenseType selectedType) {
+        if (row < 0 || row >= gameMap.rows() || col < 0 || col >= gameMap.cols()) {
+            return false;
+        }
         return calculateAvailableCells(gameMap, defenseManager, player, tileSize, selectedType).contains(new CellPosition(row, col));
     }
 
@@ -87,6 +89,8 @@ public final class BuildPlacementHelper {
             for (int colOffset = -ZONE_RADIUS; colOffset <= ZONE_RADIUS; colOffset++) {
                 int row = centerRow + rowOffset;
                 int col = centerCol + colOffset;
+
+                if (row < 0 || row >= gameMap.rows() || col < 0 || col >= gameMap.cols()) continue;
                 if (!gameMap.isPassable(row, col)) continue;
                 if (isDiagonal(rowOffset, colOffset) && isDiagonalBlockedByWalls(centerRow, centerCol, rowOffset, colOffset, gameMap)) continue;
 
@@ -108,8 +112,8 @@ public final class BuildPlacementHelper {
         int verticalRow = centerRow;
         int verticalCol = centerCol + colOffset;
 
-        boolean horizontalSideBlocked = !gameMap.isPassable(sideRow, sideCol);
-        boolean verticalSideBlocked = !gameMap.isPassable(verticalRow, verticalCol);
+        boolean horizontalSideBlocked = sideRow < 0 || sideRow >= gameMap.rows() || !gameMap.isPassable(sideRow, sideCol);
+        boolean verticalSideBlocked = verticalCol < 0 || verticalCol >= gameMap.cols() || !gameMap.isPassable(verticalRow, verticalCol);
 
         return horizontalSideBlocked && verticalSideBlocked;
     }

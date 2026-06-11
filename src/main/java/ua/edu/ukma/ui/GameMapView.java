@@ -15,6 +15,7 @@ import ua.edu.ukma.model.GameMap;
 import ua.edu.ukma.model.defense.DefenseManager;
 import ua.edu.ukma.renderer.DefenseRenderer;
 import ua.edu.ukma.renderer.TileMapRenderer;
+import ua.edu.ukma.resource.CardManager;
 import ua.edu.ukma.resource.ManaManager;
 
 import java.util.Map;
@@ -27,6 +28,7 @@ public class GameMapView extends Pane {
     private final GameMap gameMap;
     private final Player player;
     private final ManaManager manaManager=new ManaManager(100,100,10);
+    private final CardManager cardManager = new CardManager();
 
     private final DefenseManager defenseManager;
     private final DefenseController defenseController;
@@ -35,6 +37,7 @@ public class GameMapView extends Pane {
 
     private final EnemyManager enemyManager;
     private final WaveManager waveManager;
+    private CardPane cardPane;
     private final Map<KeyCode, Direction> controls = Map.of(
             KeyCode.A, Direction.LEFT,
             KeyCode.LEFT, Direction.LEFT,
@@ -59,6 +62,7 @@ this.topPanel=topPanel;
         this.enemyManager=new EnemyManager(this, gameMap, tileSize, defenseManager);
         this.placementHighlighter = new PlacementHighlighter();
         this.waveManager=new WaveManager(enemyManager);
+        this.cardPane = new CardPane(defenseController, cardManager, manaManager, this);
         TileMapRenderer renderer = new TileMapRenderer(tileSize);
         Node mapNode = renderer.render(gameMap);
 
@@ -89,7 +93,7 @@ this.topPanel=topPanel;
 
         setOnMouseClicked(event -> {
             requestFocus();
-            defenseController.buildDefense(event.getX(), event.getY(), getWidth(), getHeight(), gameMap, defenseManager, player, manaManager);
+            defenseController.buildDefense(event.getX(), event.getY(), getWidth(), getHeight(), gameMap, defenseManager, player, manaManager, cardManager);
         });
 
         setOnKeyPressed(event -> {
@@ -103,6 +107,22 @@ this.topPanel=topPanel;
         });
 
         startGameLoop();
+    }
+
+    public void setCardPane(CardPane cardPane) {
+        this.cardPane = cardPane;
+    }
+
+    public CardManager getCardManager() {
+        return cardManager;
+    }
+
+    public ManaManager getManaManager() {
+        return manaManager;
+    }
+
+    public DefenseController getDefenseController() {
+        return defenseController;
     }
 
     private void startGameLoop() {
@@ -119,6 +139,9 @@ this.topPanel=topPanel;
                 waveManager.update(0.010);
                 topPanel.update(waveManager);
                 manaManager.regenerate(0.01);
+                if (cardPane != null) {
+                    cardPane.updateUI();
+                }
                 int size = GameScaleConfig.calculateTileSize(gameMap.rows(), gameMap.cols(), getWidth(), getHeight());
                 defenseManager.updateDefenses(gameMap, enemyManager.getEnemies(), size, 0.010);
                 defenseRenderer.render(gameMap, defenseManager, size);
