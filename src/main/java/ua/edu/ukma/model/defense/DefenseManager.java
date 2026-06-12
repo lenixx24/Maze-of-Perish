@@ -48,13 +48,13 @@ public class DefenseManager {
             }
             else if (defense instanceof AttackTower tower) {
                 tower.updateTower(activeEnemies, gameMap, tileSize, deltaTime);
-                if (tower instanceof Turret) {
-                    if (tower.isDestroyed()) {
-                        for (AttackTower.FxBullet bullet : tower.bullets) bullet.removeView();
-                        iterator.remove();
+                if (tower.isDestroyed()) {
+                    if (tower instanceof Laser laser) {
+                        laser.cleanUp();
                     }
-                } else if (tower.isDestroyed()) {
-                    for (AttackTower.FxBullet bullet : tower.bullets) bullet.removeView();
+                    for (AttackTower.FxBullet bullet : tower.getBullets()) {
+                        bullet.removeView();
+                    }
                     iterator.remove();
                 }
             }

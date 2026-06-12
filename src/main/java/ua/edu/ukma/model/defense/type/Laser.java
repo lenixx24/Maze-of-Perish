@@ -13,7 +13,7 @@ public class Laser extends AttackTower {
     private boolean isBeamVisible = false;
 
     public Laser(int row, int col) {
-        super(row, col, DefenseType.LASER_TOWER, 1, 250.0, 50, 10.0, null, 0);
+        super(row, col, DefenseType.LASER_TOWER, 10, 250.0, 50, 10.0, null, 0);
         this.shootDelay = 0.1;
         this.beamPattern = null;
 

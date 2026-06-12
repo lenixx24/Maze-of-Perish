@@ -2,16 +2,16 @@ package ua.edu.ukma.model.defense;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import ua.edu.ukma.entity.SpriteSheet;
 import ua.edu.ukma.entity.enemy.Enemy;
+import ua.edu.ukma.exception.AssetLoadingException;
 import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class AttackTower extends DefenseStructure {
     private int hp;
@@ -29,6 +29,7 @@ public class AttackTower extends DefenseStructure {
     protected Enemy currentTarget = null;
     private final String bulletTexturePath;
     private final double bulletSpeed;
+    private static final Map<String, Image> BULLET_TEXTURE = new HashMap<>();
 
     public AttackTower(int row, int col, DefenseType type, int hp, double attackRange, double damage, double fireRate, String bulletTexturePath, double bulletSpeed) {
         super(row, col, type);
@@ -50,6 +51,17 @@ public class AttackTower extends DefenseStructure {
         this.spriteSheet.applyFrame(this.barrelView, 1);
         this.viewGroup = new Group(baseView, barrelView);
         this.viewGroup.setMouseTransparent(true);
+        preloadBulletTexture(bulletTexturePath);
+    }
+    private void preloadBulletTexture(String path) {
+        if (path != null && !BULLET_TEXTURE.containsKey(path)) {
+            try {
+                Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path)));
+                BULLET_TEXTURE.put(path, img);
+            } catch (Exception e) {
+                throw new AssetLoadingException("no texture found");
+            }
+        }
     }
 
     public void updateTower(List<Enemy> activeEnemies, GameMap gameMap, int tileSize, double deltaTime) {
@@ -60,8 +72,6 @@ public class AttackTower extends DefenseStructure {
         }
         if (currentTarget == null) {
             double minDistance = Double.MAX_VALUE;
-            double[] bestPoint = new double[]{centerX, centerY};
-
             for (Enemy enemy : activeEnemies) {
                 if (enemy.isActive()) {
                     double dist = Math.hypot(enemy.getX() - centerX, enemy.getY() - centerY);
@@ -167,7 +177,10 @@ public class AttackTower extends DefenseStructure {
     private void shoot(double startX, double startY, double targetX, double targetY, int tileSize) {
         if (this.bulletTexturePath == null) return;
 
-        FxBullet newBullet = new FxBullet(startX, startY, targetX, targetY, tileSize, this.bulletTexturePath, this.bulletSpeed);
+        Image cachedImage = BULLET_TEXTURE.get(this.bulletTexturePath);
+        if (cachedImage == null) return;
+
+        FxBullet newBullet = new FxBullet(startX, startY, targetX, targetY, tileSize, cachedImage, this.bulletSpeed);
         this.bullets.add(newBullet);
 
         if (viewGroup.getParent() instanceof Pane parentPane) {
@@ -182,11 +195,11 @@ public class AttackTower extends DefenseStructure {
         private final ImageView bulletView;
         private boolean hitWall = false;
 
-        public FxBullet(double startX, double startY, double targetX, double targetY, int tileSize, String texturePath, double speed) {
+        public FxBullet(double startX, double startY, double targetX, double targetY, int tileSize, Image bulletImage, double speed) {
             this.x = startX;
             this.y = startY;
 
-            this.bulletView = new ImageView(texturePath);
+            this.bulletView = new ImageView(bulletImage);
             this.bulletView.setFitWidth(tileSize / 2.0);
             this.bulletView.setFitHeight(tileSize / 2.0);
             this.bulletView.setMouseTransparent(true);
@@ -254,12 +267,8 @@ public class AttackTower extends DefenseStructure {
 
         return viewGroup;
     }
-    public List<FxBullet> getBullets() {
-        return bullets;
-    }
-    public boolean isDestroyed() {
-        return hp <= 0;
-    }
+    public List<FxBullet> getBullets() { return bullets; }
+    public boolean isDestroyed() { return hp <= 0; }
     public int getHp() { return hp; }
     public void takeDamage(int amount) { this.hp -= amount; }
     public double getAttackRange() { return attackRange; }
