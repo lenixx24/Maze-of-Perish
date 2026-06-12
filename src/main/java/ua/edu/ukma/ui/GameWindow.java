@@ -87,7 +87,7 @@ public class GameWindow {
         bottomDivider.startYProperty().bind(gameArea.heightProperty().subtract(config.bottomPanelHeight()));
         bottomDivider.endYProperty().bind(gameArea.heightProperty().subtract(config.bottomPanelHeight()));
 
-        GameMap gameMap = MazeFactory.createDefaultMaze();
+        GameMap gameMap = MazeFactory.createLevel1Maze();
 
         double availableWidth = screenBounds.getWidth();
         double availableHeight = screenBounds.getHeight()
@@ -132,7 +132,8 @@ public class GameWindow {
                 mapView.getDefenseController(),
                 mapView.getCardManager(),
                 mapView.getManaManager(),
-                mapView
+                mapView,
+                mapView.getGoldManager()
         );
 
         cardPane.setPrefWidth(screenBounds.getWidth());

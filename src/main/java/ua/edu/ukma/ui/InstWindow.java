@@ -79,30 +79,38 @@ public class InstWindow extends StackPane {
 
         rightPage.getChildren().add(rightPageText);
         btnRules.setOnAction(e -> rightPageText.setText(
-                "BASIC RULES\n\n" +
-                        "- Protect the tower at the center of the maze.\n\n" +
-                        "- Build defenses during the Preparation phase.\n\n" +
-                        "- Defeat all incoming waves to secure victory."
+                """
+                        BASIC RULES
+                        
+                        - Protect the tower at the center of the maze.
+                        
+                        - Build defenses during the Preparation phase.
+                        
+                        - Defeat all incoming waves to secure victory."""
         ));
 
         btnTowers.setOnAction(e -> rightPageText.setText(
-                "DEFENSE TYPES\n\n" +
-                        "- Trap\n\n" +
-                        "- Bomb\n\n" +
-                        "- Turret\n\n"+
-                        "- Barrier\n\n" +
-                        "- Freeze\n\n" +
-                        "- Poison Cloud\n\n" +
-                        "- Laser Tower\n\n" +
-                        "- Sniper Tower\n\n" +
-                        "- Cannon Tower"
+                """
+                        DEFENSE TYPES
+                        
+                        - Trap
+                        - Bomb
+                        - Turret
+                        - Freeze
+                        - Poison Cloud
+                        - Barrier
+                        - Sniper Tower
+                        - Laser Tower
+                        - Cannon Tower"""
         ));
 
         btnEnemies.setOnAction(e -> rightPageText.setText(
-                "ENEMY TYPES\n\n" +
-                        "- Wanderer\n\n" +
-                        "- Ram\n\n" +
-                        "- Destroyer"
+                """
+                        ENEMY TYPES
+                        
+                        - Wanderer
+                        - Ram
+                        - Destroyer"""
         ));
         pagesContainer.getChildren().addAll(leftPage, rightPage);
         this.getChildren().add(pagesContainer);

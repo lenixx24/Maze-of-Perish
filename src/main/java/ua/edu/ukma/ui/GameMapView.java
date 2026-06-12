@@ -17,6 +17,7 @@ import ua.edu.ukma.renderer.DefenseRenderer;
 import ua.edu.ukma.renderer.TileMapRenderer;
 import ua.edu.ukma.resource.CardManager;
 import ua.edu.ukma.resource.ManaManager;
+import ua.edu.ukma.resource.GoldManager;
 
 import java.util.Map;
 import java.util.Optional;
@@ -28,6 +29,7 @@ public class GameMapView extends Pane {
     private final Player player;
     private final ManaManager manaManager=new ManaManager(100,100,10);
     private final CardManager cardManager = new CardManager();
+    private final GoldManager goldManager = new GoldManager(50);
 
     private final DefenseManager defenseManager;
     private final DefenseController defenseController;
@@ -69,7 +71,7 @@ this.topPanel=topPanel;
             VictoryWindow victoryWindow = new VictoryWindow();
             victoryWindow.show();
         });
-        this.cardPane = new CardPane(defenseController, cardManager, manaManager, this);
+        this.cardPane = new CardPane(defenseController, cardManager, manaManager, this, goldManager);
         TileMapRenderer renderer = new TileMapRenderer(tileSize);
         Node mapNode = renderer.render(gameMap);
 
@@ -140,6 +142,10 @@ this.topPanel=topPanel;
 
     public ManaManager getManaManager() {
         return manaManager;
+    }
+
+    public GoldManager getGoldManager() {
+        return goldManager;
     }
 
     public DefenseController getDefenseController() {

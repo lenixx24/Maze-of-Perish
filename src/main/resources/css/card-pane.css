@@ -1,21 +1,21 @@
 .card-pane {
     -fx-background-color: rgba(53, 35, 27, 0.9);
-    -fx-padding: 30;
+    -fx-padding: 55 30 20 30;
     -fx-border-color:  #2c221b #2c221b #4a3b32;
     -fx-border-width: 4px;
+    -fx-spacing: 10px;
 }
 
 .card-container {
-    -fx-pref-width: 85px;
-    -fx-pref-height: 95px;
-}
-
-.card-button {
-    -fx-pref-width: 85px;
+    -fx-pref-width: 65px;
     -fx-pref-height: 65px;
-    -fx-min-width: 85px;
+}
+.card-button {
+    -fx-pref-width: 65px;
+    -fx-pref-height: 65px;
+    -fx-min-width: 65px;
     -fx-min-height: 65px;
-    -fx-max-width: 85px;
+    -fx-max-width: 65px;
     -fx-max-height: 65px;
     -fx-layout-y: 26px;
 
@@ -23,16 +23,22 @@
     -fx-background-radius: 0;
     -fx-background-insets: 0;
     -fx-border-color:  #5c4a3e;
-    -fx-border-width: 4px;
+    -fx-border-width: 3px;
     -fx-text-fill: #ffffff;
     -fx-font-size: 16px;
     -fx-font-family: "Jersey 10";
     -fx-font-weight: bold;
 }
+.card-button:hover {
+    -fx-background-color: #d1ab8e;
+}
 
 .selected-card {
     -fx-background-color: #5a8f54;
     -fx-border-color: #8ae080 #385c33 #385c33 #8ae080;
+}
+.selected-card:hover {
+    -fx-background-color: #5a8f54;
 }
 
 .zero-count {
@@ -40,24 +46,30 @@
     -fx-border-color: #5c534f #2b2624 #2b2624 #5c534f;
     -fx-text-fill: #7a716c;
 }
+.zero-count:hover {
+    -fx-background-color: #423b38;
+}
 
 .no-mana {
     -fx-background-color: #9c4747;
     -fx-border-color: #cf6767 #692b2b #692b2b #cf6767;
-    -fx-text-fill: #ffbaba;
+}
+.no-mana:hover {
+    -fx-background-color: #9c4747;
 }
 
 .card-label {
     -fx-background-color: #3b322c;
     -fx-text-fill: #f0e6df;
-    -fx-font-size: 15px;
+    -fx-font-size: 13px;
     -fx-font-family: "Jersey 10";
     -fx-font-weight: bold;
-    -fx-padding: 2px 4px 2px 4px;
+    -fx-padding: 0px 2px 0px 2px;
     -fx-background-radius: 0;
     -fx-border-color: #5c4e45;
     -fx-border-width: 1px;
-    -fx-layout-y: 20px;
+    -fx-layout-y: 25px;
+    -fx-layout-x: 10px;
     -fx-opacity: 0.0;
 }
 
@@ -85,4 +97,108 @@
 
 .inst-root {
     -fx-background-color: rgba(0, 0, 0, 0.75);
+}
+.mana-text {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.mana-circle {
+    -fx-fill: #af7757;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0.0, 0, 1);
+}
+.card-count-text {
+    -fx-text-fill: #ffe0bf;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-color: #5c4a3e;
+    -fx-padding: 0 3 0 3;
+}
+
+.no-mana .mana-circle {
+    -fx-fill:#c36161;
+}
+.no-mana .mana-text {
+    -fx-text-fill: #300f0f;
+}.card-pane-root {
+     -fx-alignment: bottom-center;
+ }
+
+
+.hud-bar-mana, .hud-bar-gold {
+    -fx-pref-height: 20px;
+    -fx-min-height: 20px;
+    -fx-max-width: 220px;
+
+    -fx-background-color: #2c221b;
+    -fx-background-radius: 0;
+    -fx-border-color: #4a3b32;
+    -fx-border-width: 3px;
+
+    -fx-margin: -40px 0 0 0;
+    -fx-translate-y: -50px;
+}
+
+.hud-bar-mana .track {
+    -fx-background-color: #1a110e;
+    -fx-background-radius: 0;
+    -fx-border-color: #256391 transparent transparent transparent;
+    -fx-border-width: 2px;
+}
+
+.hud-bar-gold .track {
+    -fx-background-color: #1a110e;
+    -fx-background-radius: 0;
+    -fx-border-color: #aa991a transparent transparent transparent;
+    -fx-border-width: 2px;
+}
+
+.hud-bar-mana .bar {
+    -fx-background-color: #3a96dd;
+    -fx-background-radius: 0;
+}
+
+.hud-bar-gold .bar {
+    -fx-background-color: #ffd700;
+    -fx-background-radius: 0;
+}
+.hud-center-badge {
+    -fx-background-color: #5c4a3e;
+    -fx-text-fill: #cab3a3;
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-padding: 4px 10px 4px 10px;
+    -fx-border-width: 3px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0.0, 0, 1);
+    -fx-view-order: -1.0;
+    -fx-translate-y: -50px;
+}
+.hud-pixel-square {
+    -fx-min-width: 16px;
+    -fx-max-width: 20px;
+    -fx-min-height: 20px;
+    -fx-max-height: 16px;
+    -fx-background-color: #5c4a3e;
+    -fx-border-color: #5c4a3e;
+    -fx-border-width: 2px;
+    -fx-translate-y: -50px;
+}
+.hud-digits-mana {
+    -fx-text-fill: #3a96dd;
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-translate-y: -50px;
+    -fx-padding: 0 15px 0 15px;
+}
+
+.hud-digits-gold {
+    -fx-text-fill: #ffd700;
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-translate-y: -50px;
+    -fx-padding: 0 25px 0 1px;
 }
