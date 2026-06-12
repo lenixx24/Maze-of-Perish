@@ -11,6 +11,7 @@ import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
 import ua.edu.ukma.model.defense.DefenseManager;
 import ua.edu.ukma.model.defense.DefenseStructure;
+import ua.edu.ukma.ui.GameMapView;
 
 import java.util.List;
 import java.util.Objects;
@@ -37,6 +38,7 @@ protected Direction currentDir;
     protected SpriteAnimation walkAnimation;
     protected SpriteAnimation deathAnimation;
     protected boolean isDying = false;
+    private GameMapView gameMapView;
 
     public Enemy(double startX, double startY, double speed, int damage, int maxHealth, int type, String spriteSheetPath, GameMap gameMap, int tileSize) {
         super(startX, startY, speed, maxHealth);
@@ -58,14 +60,15 @@ protected Direction currentDir;
     public void update() {
 
     }
-    public void update(DefenseManager defenseManager){
+    public void update(DefenseManager defenseManager, GameMapView mapView) {
         if (!active) return;
+        this.gameMapView = mapView;
         if (!isDying) {
             if (currentPath == null)
                 calculatePath();
             if (currentPath != null && currentPathIndex < currentPath.size())
                 moveToNextNode(defenseManager);
-            else if (currentPath != null && currentPathIndex >= currentPath.size())
+            else if (currentPath != null)
                 reachTower();
             imageView.setX(x);
             imageView.setY(y);
@@ -73,6 +76,9 @@ protected Direction currentDir;
         }
     }
 
+    public void update(DefenseManager defenseManager) {
+        update(defenseManager, null);
+    }
     private boolean canMoveTo(double nextX, double nextY) {
         double offsetX = (tileSize - hitboxWidth) / 2.0;
         double offsetY = (tileSize - hitboxHeight) / 2.0;
@@ -102,10 +108,13 @@ protected Direction currentDir;
     protected void onDeath() {
         if(isDying) return;
         isDying = true;
+
+        if (!reachedTower && gameMapView != null) {
+            gameMapView.spawnGold(getRow(tileSize), getCol(tileSize), x, y);
+        }
+
         playAnimation(deathAnimation);
-        deathAnimation.setOnFinished(e -> {
-            super.onDeath();
-        });
+        deathAnimation.setOnFinished(e -> {this.active = false;});
     }
     private void calculatePath() {
         CellPosition start = new CellPosition(getCurrentRow(), getCurrentCol());
@@ -149,7 +158,7 @@ protected Direction currentDir;
     private void reachTower() {
         this.reachedTower = true;
         playAnimation(attackAnimation);
-        attackAnimation.setOnFinished(e->super.onDeath());
+        attackAnimation.setOnFinished(e -> { this.active = false; });
     }
 
     public boolean isReachedTower() {

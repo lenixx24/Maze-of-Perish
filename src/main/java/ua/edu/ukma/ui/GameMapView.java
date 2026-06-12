@@ -19,8 +19,7 @@ import ua.edu.ukma.resource.CardManager;
 import ua.edu.ukma.resource.ManaManager;
 import ua.edu.ukma.resource.GoldManager;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class GameMapView extends Pane {
     private final int tileSize;
@@ -29,7 +28,7 @@ public class GameMapView extends Pane {
     private final Player player;
     private final ManaManager manaManager=new ManaManager(100,100,10);
     private final CardManager cardManager = new CardManager();
-    private final GoldManager goldManager = new GoldManager(50);
+    private final GoldManager goldManager = new GoldManager(0);
 
     private final DefenseManager defenseManager;
     private final DefenseController defenseController;
@@ -40,6 +39,7 @@ public class GameMapView extends Pane {
     private final WaveManager waveManager;
     private CardPane cardPane;
     private AnimationTimer gameTimer;
+    private final List<Gold> activeGold = new ArrayList<>();
 
     private final Map<KeyCode, Direction> controls = Map.of(
             KeyCode.A, Direction.LEFT,
@@ -118,6 +118,33 @@ this.topPanel=topPanel;
         startGameLoop();
     }
 
+    public void spawnGold(int row, int col, double pixelX, double pixelY) {
+        Gold gold = new Gold(row, col, pixelX, pixelY, tileSize, goldManager, this);
+        activeGold.add(gold);
+        this.getChildren().add(gold);
+        player.getView().toFront();
+    }
+    public void removeGold(Gold gold) {
+        activeGold.remove(gold);
+        this.getChildren().remove(gold);
+    }
+    private void checkGold() {
+        int playerRow = player.getRow(tileSize);
+        int playerCol = player.getCol(tileSize);
+
+        java.util.Iterator<Gold> iterator = activeGold.iterator();
+        while (iterator.hasNext()) {
+            Gold gold = iterator.next();
+
+            if (gold.getTileY() == playerRow && gold.getTileX() == playerCol) {
+                goldManager.addGold(gold.getGoldReward());
+                this.getChildren().remove(gold);
+                iterator.remove();
+                break;
+            }
+        }
+    }
+
     public void pauseGame() {
         enemyManager.stopAllAnimations();
         if (gameTimer != null) {
@@ -158,6 +185,7 @@ this.topPanel=topPanel;
             public void handle(long now) {
                 player.update();
                 player.updateAnimation(now);
+                checkGold();
                 if (!enemyManager.update()) {
                     pauseGame();
                     GameOverWindow gameOverWindow = new GameOverWindow();

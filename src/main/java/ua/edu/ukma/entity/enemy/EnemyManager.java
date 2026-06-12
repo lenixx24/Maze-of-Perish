@@ -7,6 +7,7 @@ import ua.edu.ukma.model.CellPosition;
 import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
 import ua.edu.ukma.model.defense.DefenseManager;
+import ua.edu.ukma.ui.GameMapView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,10 +41,11 @@ public class EnemyManager {
     }
     public boolean update() {
         Iterator<Enemy> iterator = enemies.iterator();
+        GameMapView mapView = (gamePane instanceof GameMapView) ? (GameMapView) gamePane : null;
 
         while (iterator.hasNext()) {
             Enemy enemy = iterator.next();
-            enemy.update(defenseManager);
+            enemy.update(defenseManager, mapView);
             if (!enemy.isActive()) {
                 if (enemy.isReachedTower())
                     towerHP--;
@@ -92,12 +94,18 @@ public class EnemyManager {
         enemies.clear();
     }
     public void stopAllAnimations(){
-        for (Entity enemy : enemies)
-            enemy.getCurrentAnimation().stop();
+        for (Entity enemy : enemies) {
+            if (enemy.getCurrentAnimation() != null) {
+            enemy.getCurrentAnimation().stop();}
         }
+    }
+
     public void resumeAllAnimations(){
-        for (Entity enemy : enemies)
+        for (Entity enemy : enemies) {
+            if (enemy.getCurrentAnimation() != null) {
             enemy.getCurrentAnimation().play();
+            }
+        }
     }
 
     public List<Enemy> getEnemies() {

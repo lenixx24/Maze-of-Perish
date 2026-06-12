@@ -1,16 +1,10 @@
 package ua.edu.ukma.ui;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.*;
+import javafx.scene.effect.*;
+import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -18,10 +12,7 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 import ua.edu.ukma.exception.AssetLoadingException;
 import ua.edu.ukma.model.defense.DefenseType;
-import ua.edu.ukma.resource.CardManager;
-import ua.edu.ukma.resource.GoldManager;
-import ua.edu.ukma.resource.ManaManager;
-
+import ua.edu.ukma.resource.*;
 import java.util.Objects;
 
 public class CardPane extends StackPane {
@@ -118,7 +109,7 @@ public class CardPane extends StackPane {
             nameLabel.setMouseTransparent(true);
 
             nameLabel.widthProperty().addListener((obs, oldVal, newVal) -> {
-                nameLabel.setLayoutX((65 - newVal.doubleValue()) / 2);
+                nameLabel.setLayoutX((63 - newVal.doubleValue()) / 2);
             });
 
             Button btn = new Button();
@@ -199,6 +190,9 @@ public class CardPane extends StackPane {
             if (count <= 0) {
                 btn.setGraphic(null);
                 btn.getStyleClass().add("zero-count");
+                if (nameLabels[i] != null && nameLabels[i].getOpacity() > 0) {
+                    animateLabel(nameLabels[i], 20, 0.0, 60);
+                }
                 continue;
             }
 
