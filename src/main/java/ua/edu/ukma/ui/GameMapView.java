@@ -132,11 +132,12 @@ this.topPanel=topPanel;
         int playerRow = player.getRow(tileSize);
         int playerCol = player.getCol(tileSize);
 
-        java.util.Iterator<Gold> iterator = activeGold.iterator();
+        Iterator<Gold> iterator = activeGold.iterator();
         while (iterator.hasNext()) {
             Gold gold = iterator.next();
-
-            if (gold.getTileY() == playerRow && gold.getTileX() == playerCol) {
+            int rowDiff = Math.abs(gold.getTileY() - playerRow);
+            int colDiff = Math.abs(gold.getTileX() - playerCol);
+            if (rowDiff <= 1 && colDiff <= 1) {
                 goldManager.addGold(gold.getGoldReward());
                 this.getChildren().remove(gold);
                 iterator.remove();

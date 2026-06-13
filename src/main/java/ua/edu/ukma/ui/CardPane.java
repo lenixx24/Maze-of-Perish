@@ -42,7 +42,7 @@ public class CardPane extends StackPane {
 
         this.getStyleClass().add("card-pane-root");
         Font.loadFont(getClass().getResourceAsStream("/font/jersey10.ttf"), 16);
-        String cssPath = Objects.requireNonNull(getClass().getResource("/css/card-pane.css")).toExternalForm();
+        String cssPath = Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm();
         this.getStylesheets().add(cssPath);
 
         cardsRow.setAlignment(Pos.CENTER);

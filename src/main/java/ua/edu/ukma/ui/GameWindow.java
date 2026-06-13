@@ -28,7 +28,7 @@ public class GameWindow {
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         Pane root = createRoot(stage, screenBounds);
         Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight(), BACKGROUND_COLOR);
-        String cssPath = Objects.requireNonNull(getClass().getResource("/css/card-pane.css")).toExternalForm();
+        String cssPath = Objects.requireNonNull(getClass().getResource("/css/style.css")).toExternalForm();
         scene.getStylesheets().add(cssPath);
         return scene;
     }

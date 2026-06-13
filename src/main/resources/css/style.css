@@ -202,3 +202,57 @@
     -fx-translate-y: -50px;
     -fx-padding: 0 25px 0 1px;
 }
+
+.inst-nav-btn {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-text-fill: #5c4e45;
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.inst-nav-btn:hover {
+    -fx-text-fill: #b86f3d;
+}
+
+.inst-page-num {
+    -fx-text-fill: #5c4e45;
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+.menu-title {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-padding: 2px;
+    -fx-text-fill: #a5785b;
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 50px;
+    -fx-font-weight: bold;
+}
+
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-padding: 2px;
+    -fx-text-fill:#5c4e45;
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 29px;
+    -fx-font-weight: bold;
+}
+.menu-button:hover {
+    -fx-text-fill: #b86f3d;
+}
+.inst-page-description{
+    -fx-text-fill: #3b322c;
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+.inst-page-title{
+    -fx-text-fill: #886c4d;
+    -fx-font-family: "Jersey 10";
+    -fx-font-size: 38px;
+    -fx-font-weight: bold;
+}
