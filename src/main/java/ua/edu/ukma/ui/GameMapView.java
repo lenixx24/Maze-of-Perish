@@ -85,7 +85,7 @@ public class GameMapView extends Pane {
         this.enemyManager=new EnemyManager(this, gameMap, tileSize, defenseManager);
 
         this.placementHighlighter = new PlacementHighlighter();
-        this.waveManager=new WaveManager(enemyManager);
+        this.waveManager=new WaveManager(enemyManager, levelInfo, goldManager);
         this.waveManager.setOnVictory(() -> {
             pauseGame();
             VictoryWindow victoryWindow = new VictoryWindow();

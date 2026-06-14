@@ -57,6 +57,8 @@ public class TopPanelView extends HBox {
         setAlignment(Pos.CENTER);
         setSpacing(17);
         timerLabel = createStyledLabel("Preparation: 0.0с");
+        timerLabel.setPrefWidth(220);
+        timerLabel.setAlignment(Pos.CENTER_LEFT);
 
         helpButton = new Button("!");
         helpButton.getStyleClass().add("help-button");
