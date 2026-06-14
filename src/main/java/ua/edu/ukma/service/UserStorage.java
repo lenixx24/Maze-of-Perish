@@ -35,10 +35,11 @@ public class UserStorage {
         String salt = PasswordHasher.createSalt();
         String passwordHash = PasswordHasher.hashPassword(password, salt);
 
-        users.setProperty(username, salt + ":" + passwordHash + ":" + START_GOLD + ":" + START_UNLOCKED_LEVELS);
+        UserProfile profile = new UserProfile(username, START_GOLD, parseUnlockedLevels(START_UNLOCKED_LEVELS), false, false);
+        users.setProperty(username, formatUserValue(salt, passwordHash, profile));
         saveUsers(users);
 
-        return new UserProfile(username, START_GOLD, parseUnlockedLevels(START_UNLOCKED_LEVELS));
+        return profile;
     }
 
     public UserProfile login(String username, String password) {
@@ -50,19 +51,21 @@ public class UserStorage {
 
         if (savedValue == null) throw new IllegalArgumentException("No user with this username was found.");
 
-        String[] parts = savedValue.split(":");
+        String[] parts = savedValue.split(":", -1);
 
-        if (parts.length != 3 && parts.length != 4) throw new IllegalStateException("The users file is corrupted.");
+        if (parts.length != 3 && parts.length != 4 && parts.length != 6) throw new IllegalStateException("The users file is corrupted.");
 
         String salt = parts[0];
         String passwordHash = parts[1];
         int gold = Integer.parseInt(parts[2]);
-        Set<Integer> unlockedLevels = parts.length == 4 ? parseUnlockedLevels(parts[3]) : parseUnlockedLevels(START_UNLOCKED_LEVELS);
+        Set<Integer> unlockedLevels = parts.length >= 4 ? parseUnlockedLevels(parts[3]) : parseUnlockedLevels(START_UNLOCKED_LEVELS);
+        boolean introSeen = parts.length >= 6 && Boolean.parseBoolean(parts[4]);
+        boolean endingCompleted = parts.length >= 6 && Boolean.parseBoolean(parts[5]);
 
         if (!PasswordHasher.verifyPassword(password, salt, passwordHash)) throw new IllegalArgumentException("Incorrect password.");
 
-        UserProfile profile = new UserProfile(username, gold, unlockedLevels);
-        if (parts.length == 3) saveResources(profile);
+        UserProfile profile = new UserProfile(username, gold, unlockedLevels, introSeen, endingCompleted);
+        if (parts.length != 6) saveResources(profile);
         return profile;
     }
 
@@ -70,10 +73,14 @@ public class UserStorage {
         Properties users = loadUsers();
         String savedValue = users.getProperty(userProfile.getUsername());
         if (savedValue == null) throw new IllegalArgumentException("User was not found.");
-        String[] parts = savedValue.split(":");
-        if (parts.length != 3 && parts.length != 4) throw new IllegalStateException("The users file is corrupted.");
-        users.setProperty(userProfile.getUsername(), parts[0] + ":" + parts[1] + ":" + userProfile.getGold() + ":" + formatUnlockedLevels(userProfile.getUnlockedLevels()));
+        String[] parts = savedValue.split(":", -1);
+        if (parts.length != 3 && parts.length != 4 && parts.length != 6) throw new IllegalStateException("The users file is corrupted.");
+        users.setProperty(userProfile.getUsername(), formatUserValue(parts[0], parts[1], userProfile));
         saveUsers(users);
+    }
+
+    private String formatUserValue(String salt, String passwordHash, UserProfile profile) {
+        return salt + ":" + passwordHash + ":" + profile.getGold() + ":" + formatUnlockedLevels(profile.getUnlockedLevels()) + ":" + profile.isIntroSeen() + ":" + profile.isEndingCompleted();
     }
 
     private Set<Integer> parseUnlockedLevels(String value) {

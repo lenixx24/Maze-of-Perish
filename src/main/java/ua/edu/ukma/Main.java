@@ -16,6 +16,7 @@ import ua.edu.ukma.ui.AuthWindow;
 import ua.edu.ukma.ui.GameWindow;
 import ua.edu.ukma.ui.LevelInfo;
 import ua.edu.ukma.ui.LevelMenuWindow;
+import ua.edu.ukma.ui.StoryDialogWindow;
 
 public class Main extends Application {
 
@@ -39,6 +40,11 @@ public class Main extends Application {
     private void showLevelMenuAfterAuthorization(Stage stage) {
         LevelMenuWindow levelMenuWindow = new LevelMenuWindow(currentUser, userStorage, selectedLevel -> showGameAfterLevelSelection(stage, selectedLevel));
         levelMenuWindow.show(stage, false);
+        if (!currentUser.isIntroSeen()) {
+            currentUser.setIntroSeen(true);
+            userStorage.saveResources(currentUser);
+            Platform.runLater(() -> new StoryDialogWindow().show(stage, "Guardian", "You have awakened beside the old Tower. This is the Maze of Perish, a place where darkness creates enemies again and again. Defend the Tower, collect gold, unlock deeper mazes, and one day use that gold to seal the Perish Gate forever.", "Begin", null));
+        }
     }
 
     private void showGameAfterLevelSelection(Stage stage, LevelInfo selectedLevel) {
@@ -56,7 +62,7 @@ public class Main extends Application {
         stage.setScene(loadingScene);
 
         Platform.runLater(() -> {
-            GameWindowConfig config = new GameWindowConfig("Maze of Perish - " + currentUser.getUsername() + " - Level " + selectedLevel.number(), 60, 150);
+            GameWindowConfig config = new GameWindowConfig("Maze of Perish", 60, 150);
             GameWindow gameWindow = new GameWindow(
                     config,
                     selectedLevel,

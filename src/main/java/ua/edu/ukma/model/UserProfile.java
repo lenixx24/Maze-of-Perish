@@ -8,12 +8,16 @@ public class UserProfile {
     private final String username;
     private int gold;
     private final Set<Integer> unlockedLevels;
+    private boolean introSeen;
+    private boolean endingCompleted;
 
-    public UserProfile(String username, int gold, Set<Integer> unlockedLevels) {
+    public UserProfile(String username, int gold, Set<Integer> unlockedLevels, boolean introSeen, boolean endingCompleted) {
         this.username = username;
         this.gold = gold;
         this.unlockedLevels = new HashSet<>(unlockedLevels);
         this.unlockedLevels.add(1);
+        this.introSeen = introSeen;
+        this.endingCompleted = endingCompleted;
     }
 
     public String getUsername() {
@@ -45,5 +49,21 @@ public class UserProfile {
 
     public Set<Integer> getUnlockedLevels() {
         return Set.copyOf(unlockedLevels);
+    }
+
+    public boolean isIntroSeen() {
+        return introSeen;
+    }
+
+    public void setIntroSeen(boolean introSeen) {
+        this.introSeen = introSeen;
+    }
+
+    public boolean isEndingCompleted() {
+        return endingCompleted;
+    }
+
+    public void setEndingCompleted(boolean endingCompleted) {
+        this.endingCompleted = endingCompleted;
     }
 }
