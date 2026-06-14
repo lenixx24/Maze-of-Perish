@@ -9,7 +9,6 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import ua.edu.ukma.config.GameScaleConfig;
 import ua.edu.ukma.config.GameWindowConfig;
-import ua.edu.ukma.map.MazeFactory;
 import ua.edu.ukma.model.GameMap;
 import ua.edu.ukma.model.UserProfile;
 import ua.edu.ukma.service.UserStorage;
@@ -21,15 +20,15 @@ public class GameWindow {
     private static final Color BORDER_COLOR = Color.rgb(74, 59, 50);
 
     private final GameWindowConfig config;
-    private final GameMap selectedMap;
+    private final LevelInfo selectedLevel;
     private final UserProfile userProfile;
     private final UserStorage userStorage;
     private final Runnable onRestart;
     private final Runnable onMainMenu;
 
-    public GameWindow(GameWindowConfig config, GameMap selectedMap, UserProfile userProfile, UserStorage userStorage, Runnable onRestart, Runnable onMainMenu) {
+    public GameWindow(GameWindowConfig config, LevelInfo selectedLevel, UserProfile userProfile, UserStorage userStorage, Runnable onRestart, Runnable onMainMenu) {
         this.config = config;
-        this.selectedMap = selectedMap;
+        this.selectedLevel = selectedLevel;
         this.userProfile = userProfile;
         this.userStorage = userStorage;
         this.onRestart = onRestart;
@@ -99,7 +98,7 @@ public class GameWindow {
         bottomDivider.startYProperty().bind(gameArea.heightProperty().subtract(config.bottomPanelHeight()));
         bottomDivider.endYProperty().bind(gameArea.heightProperty().subtract(config.bottomPanelHeight()));
 
-        GameMap gameMap = selectedMap;
+        GameMap gameMap = selectedLevel.mapSupplier().get();
 
         double availableWidth = screenBounds.getWidth();
         double availableHeight = screenBounds.getHeight()
@@ -124,7 +123,7 @@ public class GameWindow {
         topPanel.setLayoutX(0);
         topPanel.setLayoutY(0);
 
-        GameMapView mapView = new GameMapView(gameMap, tileSize, topPanel, userProfile, userStorage, onRestart, onMainMenu);
+        GameMapView mapView = new GameMapView(gameMap, tileSize, topPanel, userProfile, userStorage, onRestart, onMainMenu, selectedLevel);
         mapView.setLayoutX(0);
         mapView.setLayoutY(0);
 

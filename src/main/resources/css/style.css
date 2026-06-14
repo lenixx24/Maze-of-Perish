@@ -42,12 +42,14 @@
 }
 
 .zero-count {
-    -fx-background-color: #423b38;
-    -fx-border-color: #5c534f #2b2624 #2b2624 #5c534f;
-    -fx-text-fill: #7a716c;
+    -fx-opacity: 0.6;
+    -fx-cursor: default;
+    -fx-background-color: rgb(40, 40, 45);
 }
 .zero-count:hover {
-    -fx-background-color: #423b38;
+    -fx-background-color: rgb(40, 40, 45);
+    -fx-scale-x: 1.0;
+    -fx-scale-y: 1.0;
 }
 
 .no-mana {

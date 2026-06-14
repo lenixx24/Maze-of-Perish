@@ -29,7 +29,8 @@ public class GameMapView extends Pane {
     private final GameMap gameMap;
     private final Player player;
     private final ManaManager manaManager=new ManaManager(100,100,10);
-    private final CardManager cardManager = new CardManager();
+    LevelInfo selectedLevel;
+    private final CardManager cardManager;
     private final GoldManager goldManager;
     private final UserProfile userProfile;
     private final UserStorage userStorage;
@@ -61,11 +62,11 @@ public class GameMapView extends Pane {
             KeyCode.DOWN, Direction.DOWN
     );
 
-    public GameMapView(GameMap gameMap, int tileSize, TopPanelView topPanel, UserProfile userProfile, UserStorage userStorage) {
-        this(gameMap, tileSize, topPanel, userProfile, userStorage, null, null);
+    public GameMapView(GameMap gameMap, int tileSize, TopPanelView topPanel, UserProfile userProfile, UserStorage userStorage, LevelInfo levelInfo) {
+        this(gameMap, tileSize, topPanel, userProfile, userStorage, null, null, levelInfo);
     }
 
-    public GameMapView(GameMap gameMap, int tileSize, TopPanelView topPanel, UserProfile userProfile, UserStorage userStorage, Runnable onRestart, Runnable onMainMenu) {
+    public GameMapView(GameMap gameMap, int tileSize, TopPanelView topPanel, UserProfile userProfile, UserStorage userStorage, Runnable onRestart, Runnable onMainMenu, LevelInfo levelInfo) {
         this.gameMap = gameMap;
         this.tileSize = tileSize;
         this.topPanel=topPanel;
@@ -73,6 +74,10 @@ public class GameMapView extends Pane {
         this.userStorage = userStorage;
         this.onRestart = onRestart;
         this.onMainMenu = onMainMenu;
+
+        this.selectedLevel = levelInfo;
+        this.cardManager = new CardManager(selectedLevel.initialCards());
+
         this.goldManager = new GoldManager(userProfile != null ? userProfile.getGold() : 0);
         this.defenseManager = new DefenseManager();
         this.defenseController = new DefenseController();
@@ -134,7 +139,7 @@ public class GameMapView extends Pane {
     }
 
     public void spawnGold(int row, int col, double pixelX, double pixelY) {
-        Gold gold = new Gold(row, col, pixelX, pixelY, tileSize, goldManager, this);
+        Gold gold = new Gold(row, col, pixelX, pixelY, tileSize, goldManager, this, selectedLevel.goldPerCoin());
         activeGold.add(gold);
         this.getChildren().add(gold);
         player.getView().toFront();

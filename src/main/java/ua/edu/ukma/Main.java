@@ -59,7 +59,7 @@ public class Main extends Application {
             GameWindowConfig config = new GameWindowConfig("Maze of Perish - " + currentUser.getUsername() + " - Level " + selectedLevel.number(), 60, 150);
             GameWindow gameWindow = new GameWindow(
                     config,
-                    selectedLevel.mapSupplier().get(),
+                    selectedLevel,
                     currentUser,
                     userStorage,
                     () -> showGame(stage, selectedLevel),

@@ -17,18 +17,19 @@ public class Gold extends Pane {
     private final int tileX;
     private final GoldManager goldManager;
     private final GameMapView gameMapView;
-    private final int goldReward = 5;
+    private final int goldReward;
 
     private static final int FRAME_COUNT = 4;
     private static final double FRAME_WIDTH = 415.0 / FRAME_COUNT;
     private static final double FRAME_HEIGHT = 80.0;
     private int currentFrame = 0;
 
-    public Gold(int tileY, int tileX, double pixelX, double pixelY, int tileSize, GoldManager goldManager, GameMapView gameMapView) {
+    public Gold(int tileY, int tileX, double pixelX, double pixelY, int tileSize, GoldManager goldManager, GameMapView gameMapView, int goldReward) {
         this.tileY = tileY;
         this.tileX = tileX;
         this.goldManager = goldManager;
         this.gameMapView = gameMapView;
+        this.goldReward = goldReward;
 
         Image coinSheet = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/image/gold.png")));
         this.imageView = new ImageView(coinSheet);

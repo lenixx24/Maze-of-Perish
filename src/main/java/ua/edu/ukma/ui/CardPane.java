@@ -73,7 +73,7 @@ public class CardPane extends StackPane {
         manaTextLabel.setPrefWidth(50);
         manaTextLabel.setAlignment(Pos.CENTER_LEFT);
         goldTextLabel.getStyleClass().add("hud-digits-gold");
-        goldTextLabel.setPrefWidth(50);
+        goldTextLabel.setPrefWidth(53);
         goldTextLabel.setAlignment(Pos.CENTER_RIGHT);
         HUDCenterLabel.getStyleClass().add("hud-center-badge");
         Region leftSquare = new Region();
@@ -187,15 +187,6 @@ public class CardPane extends StackPane {
             if (btn == null) continue;
             btn.getStyleClass().removeAll("zero-count", "no-mana", "selected-card");
 
-            if (count <= 0) {
-                btn.setGraphic(null);
-                btn.getStyleClass().add("zero-count");
-                if (nameLabels[i] != null && nameLabels[i].getOpacity() > 0) {
-                    animateLabel(nameLabels[i], 20, 0.0, 60);
-                }
-                continue;
-            }
-
             AnchorPane cardOverlay = new AnchorPane();
             cardOverlay.setPrefSize(49, 49);
             cardOverlay.setMouseTransparent(true);
@@ -233,21 +224,31 @@ public class CardPane extends StackPane {
             cardOverlay.getChildren().addAll(countLabel, manaBadge);
             btn.setGraphic(cardOverlay);
 
-            if (currentMana < type.manaCost()) {
-                btn.getStyleClass().add("no-mana");
-                if (nameLabels[i].getOpacity() > 0) {
+            if (count <= 0) {
+                btn.setDisable(true);
+                btn.getStyleClass().add("zero-count");
+
+                if (nameLabels[i] != null && nameLabels[i].getOpacity() > 0) {
                     animateLabel(nameLabels[i], 20, 0.0, 60);
                 }
             } else {
-                if (controller.getSelectedType() == type) {
-                    btn.getStyleClass().add("selected-card");
-                } else {
+                btn.setDisable(false);
+
+                if (currentMana < type.manaCost()) {
+                    btn.getStyleClass().add("no-mana");
                     if (nameLabels[i].getOpacity() > 0) {
                         animateLabel(nameLabels[i], 20, 0.0, 60);
                     }
+                } else {
+                    if (controller.getSelectedType() == type) {
+                        btn.getStyleClass().add("selected-card");
+                    } else {
+                        if (nameLabels[i].getOpacity() > 0) {
+                            animateLabel(nameLabels[i], 20, 0.0, 60);
+                        }
+                    }
                 }
             }
-
         }
     }
 }

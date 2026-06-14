@@ -4,17 +4,11 @@ import ua.edu.ukma.model.defense.DefenseType;
 
 public class CardManager {
     private final DefenseType[] hand = DefenseType.values();
-    private final int[] amounts = {
-            10, // trap
-            5,  // bomb
-            4,  // turret
-            3,  // freeze
-            3,  // poison
-            6,  // barrier
-            2,  // sniper
-            1,  // laser
-            2   // cannon
-    };
+    private final int[] amounts;
+
+    public CardManager(int[] initialAmounts) {
+        this.amounts = initialAmounts.clone();
+    }
 
     public DefenseType[] getHand() {
         return hand;
