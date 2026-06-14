@@ -237,16 +237,9 @@ public class AuthWindow {
         Button button = new Button(text);
         button.setPrefSize(PANEL_WIDTH - 96, 62);
         button.setFocusTraversable(false);
-        button.setStyle("""
-                -fx-background-color: linear-gradient(to bottom, #5d7fa9, #385375);
-                -fx-border-color: #89a9d0;
-                -fx-border-width: 1;
-                -fx-text-fill: white;
-                -fx-font-size: 22px;
-                -fx-font-weight: bold;
-                -fx-background-radius: 3;
-                -fx-border-radius: 3;
-                """);
+        button.setStyle(gameButtonStyle(false));
+        button.setOnMouseEntered(event -> button.setStyle(gameButtonStyle(true)));
+        button.setOnMouseExited(event -> button.setStyle(gameButtonStyle(false)));
         return button;
     }
 
@@ -272,28 +265,53 @@ public class AuthWindow {
         }
     }
 
+    private String gameButtonStyle(boolean hover) {
+        String background = hover ? "#3b322c" : "#ecc8ad";
+        String textColor = hover ? "#f0e6df" : "#2c221b";
+        String borderColor = hover ? "#5c4e45" : "#ffffff #5c4a3e #5c4a3e #ffffff";
+
+        return """
+                -fx-background-color: %s;
+                -fx-border-color: %s;
+                -fx-border-width: 3;
+                -fx-text-fill: %s;
+                -fx-font-family: "Jersey 10";
+                -fx-font-size: 22px;
+                -fx-font-weight: bold;
+                -fx-background-radius: 0;
+                -fx-border-radius: 0;
+                -fx-cursor: hand;
+                """.formatted(background, borderColor, textColor);
+    }
+
     private String activeTabStyle() {
         return """
-                -fx-background-color: linear-gradient(to bottom, #5d7fa9, #385375);
-                -fx-border-color: #89a9d0;
-                -fx-border-width: 1;
-                -fx-text-fill: white;
-                -fx-font-size: 20px;
+                -fx-background-color: #3b322c;
+                -fx-border-color: #ffffff #5c4a3e #5c4a3e #ffffff;
+                -fx-border-width: 3;
+                -fx-text-fill: #f0e6df;
+                -fx-font-family: "Jersey 10";
+                -fx-font-size: 21px;
                 -fx-font-weight: bold;
-                -fx-background-radius: 2;
-                -fx-border-radius: 2;
+                -fx-background-radius: 0;
+                -fx-border-radius: 0;
+                -fx-cursor: hand;
                 """;
     }
 
     private String inactiveTabStyle() {
         return """
-                -fx-background-color: rgba(14, 20, 28, 0.75);
-                -fx-border-color: #555d67;
-                -fx-border-width: 1;
-                -fx-text-fill: #c5cad1;
-                -fx-font-size: 20px;
-                -fx-background-radius: 2;
-                -fx-border-radius: 2;
+                -fx-background-color: #ecc8ad;
+                -fx-border-color: #5c4a3e;
+                -fx-border-width: 3;
+                -fx-text-fill: #2c221b;
+                -fx-font-family: "Jersey 10";
+                -fx-font-size: 21px;
+                -fx-font-weight: bold;
+                -fx-background-radius: 0;
+                -fx-border-radius: 0;
+                -fx-cursor: hand;
+                -fx-opacity: 0.88;
                 """;
     }
 }
