@@ -18,6 +18,8 @@ import ua.edu.ukma.renderer.TileMapRenderer;
 import ua.edu.ukma.resource.CardManager;
 import ua.edu.ukma.resource.ManaManager;
 import ua.edu.ukma.resource.GoldManager;
+import ua.edu.ukma.model.UserProfile;
+import ua.edu.ukma.service.UserStorage;
 
 import java.util.*;
 
@@ -28,7 +30,11 @@ public class GameMapView extends Pane {
     private final Player player;
     private final ManaManager manaManager=new ManaManager(100,100,10);
     private final CardManager cardManager = new CardManager();
-    private final GoldManager goldManager = new GoldManager(0);
+    private final GoldManager goldManager;
+    private final UserProfile userProfile;
+    private final UserStorage userStorage;
+    private final Runnable onRestart;
+    private final Runnable onMainMenu;
 
     private final DefenseManager defenseManager;
     private final DefenseController defenseController;
@@ -55,10 +61,19 @@ public class GameMapView extends Pane {
             KeyCode.DOWN, Direction.DOWN
     );
 
-    public GameMapView(GameMap gameMap, int tileSize, TopPanelView topPanel) {
+    public GameMapView(GameMap gameMap, int tileSize, TopPanelView topPanel, UserProfile userProfile, UserStorage userStorage) {
+        this(gameMap, tileSize, topPanel, userProfile, userStorage, null, null);
+    }
+
+    public GameMapView(GameMap gameMap, int tileSize, TopPanelView topPanel, UserProfile userProfile, UserStorage userStorage, Runnable onRestart, Runnable onMainMenu) {
         this.gameMap = gameMap;
         this.tileSize = tileSize;
-this.topPanel=topPanel;
+        this.topPanel=topPanel;
+        this.userProfile = userProfile;
+        this.userStorage = userStorage;
+        this.onRestart = onRestart;
+        this.onMainMenu = onMainMenu;
+        this.goldManager = new GoldManager(userProfile != null ? userProfile.getGold() : 0);
         this.defenseManager = new DefenseManager();
         this.defenseController = new DefenseController();
         this.defenseRenderer = new DefenseRenderer(this);
@@ -69,7 +84,7 @@ this.topPanel=topPanel;
         this.waveManager.setOnVictory(() -> {
             pauseGame();
             VictoryWindow victoryWindow = new VictoryWindow();
-            victoryWindow.show();
+            victoryWindow.show(onRestart, onMainMenu);
         });
         this.cardPane = new CardPane(defenseController, cardManager, manaManager, this, goldManager);
         TileMapRenderer renderer = new TileMapRenderer(tileSize);
@@ -139,6 +154,7 @@ this.topPanel=topPanel;
             int colDiff = Math.abs(gold.getTileX() - playerCol);
             if (rowDiff <= 1 && colDiff <= 1) {
                 goldManager.addGold(gold.getGoldReward());
+                saveAccountGold();
                 this.getChildren().remove(gold);
                 iterator.remove();
                 break;
@@ -146,7 +162,14 @@ this.topPanel=topPanel;
         }
     }
 
+    private void saveAccountGold() {
+        if (userProfile == null || userStorage == null) return;
+        userProfile.setGold(goldManager.getGold());
+        userStorage.saveResources(userProfile);
+    }
+
     public void pauseGame() {
+        saveAccountGold();
         enemyManager.stopAllAnimations();
         if (gameTimer != null) {
             gameTimer.stop();
@@ -190,7 +213,7 @@ this.topPanel=topPanel;
                 if (!enemyManager.update()) {
                     pauseGame();
                     GameOverWindow gameOverWindow = new GameOverWindow();
-                    gameOverWindow.show();
+                    gameOverWindow.show(onRestart, onMainMenu);
                 }
                 waveManager.update(0.010);
                 topPanel.update(waveManager, enemyManager.towerHP);

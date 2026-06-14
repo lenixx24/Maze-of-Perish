@@ -136,31 +136,31 @@ public class AuthWindow {
                 -fx-border-radius: 6;
                 """);
 
-        loginTab = createTabButton("Авторизація", true);
+        loginTab = createTabButton("Login", true);
         loginTab.setLayoutX(40);
         loginTab.setLayoutY(35);
         loginTab.setOnAction(event -> setRegistrationMode(false));
 
-        registerTab = createTabButton("Реєстрація", false);
+        registerTab = createTabButton("Register", false);
         registerTab.setLayoutX(315);
         registerTab.setLayoutY(35);
         registerTab.setOnAction(event -> setRegistrationMode(true));
 
-        titleLabel = new Label("Вхід до гри");
+        titleLabel = new Label("Game login");
         titleLabel.setLayoutX(40);
         titleLabel.setLayoutY(115);
         titleLabel.setPrefWidth(PANEL_WIDTH - 80);
         titleLabel.setStyle("-fx-text-fill: #e8edf4; -fx-font-size: 26px; -fx-font-weight: bold;");
 
-        Label usernameLabel = createFieldLabel("Ім'я");
+        Label usernameLabel = createFieldLabel("Username");
         usernameLabel.setLayoutX(48);
         usernameLabel.setLayoutY(165);
 
-        usernameField = createTextField("Введіть ім'я...");
+        usernameField = createTextField("Enter username...");
         usernameField.setLayoutX(48);
         usernameField.setLayoutY(197);
 
-        Label passwordLabel = createFieldLabel("Пароль");
+        Label passwordLabel = createFieldLabel("Password");
         passwordLabel.setLayoutX(48);
         passwordLabel.setLayoutY(270);
 
@@ -168,7 +168,7 @@ public class AuthWindow {
         passwordField.setLayoutX(48);
         passwordField.setLayoutY(302);
 
-        mainButton = createMainButton("Увійти");
+        mainButton = createMainButton("Log in");
         mainButton.setLayoutX(48);
         mainButton.setLayoutY(385);
         mainButton.setOnAction(event -> handleAuth());
@@ -218,7 +218,7 @@ public class AuthWindow {
 
     private PasswordField createPasswordField() {
         PasswordField field = new PasswordField();
-        field.setPromptText("Введіть пароль...");
+        field.setPromptText("Enter password...");
         field.setPrefSize(PANEL_WIDTH - 96, 58);
         field.setStyle("""
                 -fx-background-color: rgba(12, 18, 26, 0.65);
@@ -254,9 +254,9 @@ public class AuthWindow {
         this.registrationMode = registrationMode;
         loginTab.setStyle(registrationMode ? inactiveTabStyle() : activeTabStyle());
         registerTab.setStyle(registrationMode ? activeTabStyle() : inactiveTabStyle());
-        titleLabel.setText(registrationMode ? "Створення акаунта" : "Вхід до гри");
-        mainButton.setText(registrationMode ? "Зареєструватися" : "Увійти");
-        messageLabel.setText("Ресурси гравця зберігаються у файлі.");
+        titleLabel.setText(registrationMode ? "Create account" : "Game login");
+        mainButton.setText(registrationMode ? "Register" : "Log in");
+        messageLabel.setText("Player resources are saved in the account file.");
         messageLabel.setStyle("-fx-text-fill: #b6c0cc; -fx-font-size: 15px; -fx-alignment: center;");
     }
 

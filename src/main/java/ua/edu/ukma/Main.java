@@ -11,24 +11,24 @@ import javafx.util.Duration;
 import ua.edu.ukma.config.GameWindowConfig;
 import ua.edu.ukma.exception.GameInitializationException;
 import ua.edu.ukma.model.UserProfile;
+import ua.edu.ukma.service.UserStorage;
 import ua.edu.ukma.ui.AuthWindow;
 import ua.edu.ukma.ui.GameWindow;
+import ua.edu.ukma.ui.LevelInfo;
+import ua.edu.ukma.ui.LevelMenuWindow;
 
 public class Main extends Application {
 
     private static final Color BACKGROUND_COLOR = Color.rgb(24, 24, 32);
     private static UserProfile currentUser;
+    private final UserStorage userStorage = new UserStorage();
 
     @Override
     public void start(Stage stage) {
         try {
             AuthWindow authWindow = new AuthWindow(userProfile -> {
                 currentUser = userProfile;
-                FadeTransition fadeOut = new FadeTransition(Duration.millis(350), stage.getScene().getRoot());
-                fadeOut.setFromValue(1.0);
-                fadeOut.setToValue(0.0);
-                fadeOut.setOnFinished(event -> showGameAfterAuthorization(stage));
-                fadeOut.play();
+                showLevelMenuAfterAuthorization(stage);
             });
             authWindow.show(stage);
         } catch (Exception exception) {
@@ -36,17 +36,35 @@ public class Main extends Application {
         }
     }
 
-    private void showGameAfterAuthorization(Stage stage) {
+    private void showLevelMenuAfterAuthorization(Stage stage) {
+        LevelMenuWindow levelMenuWindow = new LevelMenuWindow(currentUser, userStorage, selectedLevel -> showGameAfterLevelSelection(stage, selectedLevel));
+        levelMenuWindow.show(stage, false);
+    }
+
+    private void showGameAfterLevelSelection(Stage stage, LevelInfo selectedLevel) {
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(280), stage.getScene().getRoot());
+        fadeOut.setFromValue(1.0);
+        fadeOut.setToValue(0.0);
+        fadeOut.setOnFinished(event -> showGame(stage, selectedLevel));
+        fadeOut.play();
+    }
+
+    private void showGame(Stage stage, LevelInfo selectedLevel) {
         Pane loadingRoot = new Pane();
         loadingRoot.setStyle("-fx-background-color: rgb(24, 24, 32);");
-
         Scene loadingScene = new Scene(loadingRoot, stage.getWidth(), stage.getHeight(), BACKGROUND_COLOR);
-
         stage.setScene(loadingScene);
 
         Platform.runLater(() -> {
-            GameWindowConfig config = new GameWindowConfig("Maze of Perish - " + currentUser.getUsername(), 60, 150);
-            GameWindow gameWindow = new GameWindow(config);
+            GameWindowConfig config = new GameWindowConfig("Maze of Perish - " + currentUser.getUsername() + " - Level " + selectedLevel.number(), 60, 150);
+            GameWindow gameWindow = new GameWindow(
+                    config,
+                    selectedLevel.mapSupplier().get(),
+                    currentUser,
+                    userStorage,
+                    () -> showGame(stage, selectedLevel),
+                    () -> showLevelMenuAfterAuthorization(stage)
+            );
 
             Scene gameScene = gameWindow.createScene(stage);
             gameScene.getRoot().setOpacity(0.0);
@@ -58,10 +76,6 @@ public class Main extends Application {
             fadeIn.setToValue(1.0);
             fadeIn.play();
         });
-    }
-
-    public static UserProfile getCurrentUser() {
-        return currentUser;
     }
 
     public static void main(String[] args) {

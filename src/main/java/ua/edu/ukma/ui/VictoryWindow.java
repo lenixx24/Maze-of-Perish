@@ -14,7 +14,7 @@ import javafx.stage.StageStyle;
 
 public class VictoryWindow {
 
-    public void show() {
+    public void show(Runnable onRestart, Runnable onMainMenu) {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initStyle(StageStyle.TRANSPARENT);
@@ -33,21 +33,20 @@ public class VictoryWindow {
         subLabel.setTextFill(Color.WHITE);
         subLabel.setFont(Font.font("Jersey 10", FontWeight.NORMAL, 24));
 
-        Button nextLevelBtn = createStyledButton("Next level");
+        Button restartBtn = createStyledButton("Reset");
         Button mainMenuBtn = createStyledButton("Main menu");
 
-        nextLevelBtn.setOnAction(e -> {
-            System.out.println("Next level");
+        restartBtn.setOnAction(e -> {
             stage.close();
-
+            if (onRestart != null) onRestart.run();
         });
 
         mainMenuBtn.setOnAction(e -> {
-            System.out.println("Main??");
             stage.close();
+            if (onMainMenu != null) onMainMenu.run();
         });
 
-        layout.getChildren().addAll(victoryLabel, subLabel, nextLevelBtn, mainMenuBtn);
+        layout.getChildren().addAll(victoryLabel, subLabel, restartBtn, mainMenuBtn);
         Scene scene = new Scene(layout, 400, 300);
         scene.setFill(Color.TRANSPARENT);
 

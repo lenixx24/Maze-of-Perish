@@ -14,7 +14,7 @@ import javafx.stage.StageStyle;
 
 public class GameOverWindow {
 
-    public void show() {
+    public void show(Runnable onRetry, Runnable onMainMenu) {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initStyle(StageStyle.TRANSPARENT);
@@ -37,13 +37,13 @@ public class GameOverWindow {
         Button mainMenuBtn = createStyledButton("Main menu");
 
         retryBtn.setOnAction(e -> {
-            System.out.println("reset");
             stage.close();
+            if (onRetry != null) onRetry.run();
         });
 
         mainMenuBtn.setOnAction(e -> {
-            System.out.println("main menu");
             stage.close();
+            if (onMainMenu != null) onMainMenu.run();
         });
 
         layout.getChildren().addAll(defeatLabel, subLabel, retryBtn, mainMenuBtn);

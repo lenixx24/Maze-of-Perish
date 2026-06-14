@@ -11,6 +11,8 @@ import ua.edu.ukma.config.GameScaleConfig;
 import ua.edu.ukma.config.GameWindowConfig;
 import ua.edu.ukma.map.MazeFactory;
 import ua.edu.ukma.model.GameMap;
+import ua.edu.ukma.model.UserProfile;
+import ua.edu.ukma.service.UserStorage;
 import java.util.Objects;
 
 public class GameWindow {
@@ -19,9 +21,19 @@ public class GameWindow {
     private static final Color BORDER_COLOR = Color.rgb(74, 59, 50);
 
     private final GameWindowConfig config;
+    private final GameMap selectedMap;
+    private final UserProfile userProfile;
+    private final UserStorage userStorage;
+    private final Runnable onRestart;
+    private final Runnable onMainMenu;
 
-    public GameWindow(GameWindowConfig config) {
+    public GameWindow(GameWindowConfig config, GameMap selectedMap, UserProfile userProfile, UserStorage userStorage, Runnable onRestart, Runnable onMainMenu) {
         this.config = config;
+        this.selectedMap = selectedMap;
+        this.userProfile = userProfile;
+        this.userStorage = userStorage;
+        this.onRestart = onRestart;
+        this.onMainMenu = onMainMenu;
     }
 
     public Scene createScene(Stage stage) {
@@ -87,7 +99,7 @@ public class GameWindow {
         bottomDivider.startYProperty().bind(gameArea.heightProperty().subtract(config.bottomPanelHeight()));
         bottomDivider.endYProperty().bind(gameArea.heightProperty().subtract(config.bottomPanelHeight()));
 
-        GameMap gameMap = MazeFactory.createLevel1Maze();
+        GameMap gameMap = selectedMap;
 
         double availableWidth = screenBounds.getWidth();
         double availableHeight = screenBounds.getHeight()
@@ -112,7 +124,7 @@ public class GameWindow {
         topPanel.setLayoutX(0);
         topPanel.setLayoutY(0);
 
-        GameMapView mapView = new GameMapView(gameMap, tileSize, topPanel);
+        GameMapView mapView = new GameMapView(gameMap, tileSize, topPanel, userProfile, userStorage, onRestart, onMainMenu);
         mapView.setLayoutX(0);
         mapView.setLayoutY(0);
 
