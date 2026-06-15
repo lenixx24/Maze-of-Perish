@@ -73,7 +73,7 @@ public class CardPane extends StackPane {
         manaTextLabel.setPrefWidth(50);
         manaTextLabel.setAlignment(Pos.CENTER_LEFT);
         goldTextLabel.getStyleClass().add("hud-digits-gold");
-        goldTextLabel.setPrefWidth(53);
+        goldTextLabel.setPrefWidth(60);
         goldTextLabel.setAlignment(Pos.CENTER_RIGHT);
         HUDCenterLabel.getStyleClass().add("hud-center-badge");
         Region leftSquare = new Region();
