@@ -242,4 +242,10 @@ public class GameMapView extends Pane {
 
         gameTimer.start();
     }
+    public void toggleSound() {
+        if (audioManager != null && topPanel != null) {
+            boolean isMuted = audioManager.toggleMute();
+            topPanel.updateMuteIcon(isMuted);
+        }
+    }
 }

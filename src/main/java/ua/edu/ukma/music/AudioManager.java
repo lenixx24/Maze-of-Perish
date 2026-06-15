@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AudioManager {
+    private boolean isMuted = false;
     private double musicVolume=0.3;
     private double soundVolume=0.5;
     private MediaPlayer bgMusicPlayer;
@@ -40,7 +41,15 @@ public class AudioManager {
             bgMusicPlayer.stop();
         }
     }
+    public boolean toggleMute() {
+        isMuted = !isMuted;
+        if (bgMusicPlayer != null)
+            bgMusicPlayer.setMute(isMuted);
+
+        return isMuted;
+    }
     public void playSoundEffect(String filePath) {
+        if (isMuted) return;
         long currentTime = System.currentTimeMillis();
         if (lastPlayedTime.containsKey(filePath)) {
             long timeSinceLastPlay = currentTime - lastPlayedTime.get(filePath);

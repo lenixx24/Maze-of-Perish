@@ -24,6 +24,7 @@ public class TopPanelView extends HBox {
     private final Label waveLabel;
     private final Label timerLabel;
     private final Button helpButton;
+    private final Button muteButton;
     private final InstWindow instWindow;
     private GameMapView mapView;
 
@@ -72,7 +73,17 @@ public class TopPanelView extends HBox {
                 );
             }
         });
-        getChildren().addAll(heartsContainer, leftSpacer, waveLabel, timerLabel, rightSpacer, helpButton);
+        muteButton = new Button("🔊");
+        muteButton.getStyleClass().add("help-button");
+        muteButton.setPrefWidth(85);
+        muteButton.setFocusTraversable(false);
+
+        muteButton.setOnAction(event -> {
+            if (this.mapView != null) {
+                this.mapView.toggleSound();
+            }
+        });
+        getChildren().addAll(heartsContainer, leftSpacer, waveLabel, timerLabel, rightSpacer, helpButton, muteButton);
     }
 
     private Label createStyledLabel(String defaultText) {
@@ -100,7 +111,15 @@ public class TopPanelView extends HBox {
             timerLabel.setTextFill(Color.web("#ff4444"));
         }
     }
-
+    public void updateMuteIcon(boolean isMuted) {
+        if (isMuted) {
+            muteButton.setText("🔇");
+            muteButton.setTextFill(Color.web("#ff4444"));
+        } else {
+            muteButton.setText("🔊");
+            muteButton.setTextFill(Color.WHITE);
+        }
+    }
     public void setMapView(GameMapView mapView) {
         this.mapView = mapView;
     }
