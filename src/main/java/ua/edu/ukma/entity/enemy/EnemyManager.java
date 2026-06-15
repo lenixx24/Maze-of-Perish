@@ -7,6 +7,7 @@ import ua.edu.ukma.model.CellPosition;
 import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
 import ua.edu.ukma.model.defense.DefenseManager;
+import ua.edu.ukma.music.AudioManager;
 import ua.edu.ukma.ui.GameMapView;
 
 import java.util.ArrayList;
@@ -39,16 +40,18 @@ public class EnemyManager {
         enemies.add(enemy);
         gamePane.getChildren().add(enemy.getImageView());
     }
-    public boolean update() {
+    public boolean update(AudioManager audioManager) {
         Iterator<Enemy> iterator = enemies.iterator();
         GameMapView mapView = (gamePane instanceof GameMapView) ? (GameMapView) gamePane : null;
 
         while (iterator.hasNext()) {
             Enemy enemy = iterator.next();
-            enemy.update(defenseManager, mapView);
+            enemy.update(defenseManager, mapView, audioManager);
             if (!enemy.isActive()) {
-                if (enemy.isReachedTower())
+                if (enemy.isReachedTower()){
                     towerHP--;
+                    audioManager.playSoundEffect("/audio/tower_damage.mp3");
+                }
                 System.out.println(towerHP);
                 removeEnemyFromScene(enemy);
                 iterator.remove();

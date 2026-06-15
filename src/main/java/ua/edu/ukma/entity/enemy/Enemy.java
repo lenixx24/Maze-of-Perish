@@ -11,6 +11,7 @@ import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
 import ua.edu.ukma.model.defense.DefenseManager;
 import ua.edu.ukma.model.defense.DefenseStructure;
+import ua.edu.ukma.music.AudioManager;
 import ua.edu.ukma.ui.GameMapView;
 
 import java.util.List;
@@ -60,7 +61,7 @@ protected Direction currentDir;
     public void update() {
 
     }
-    public void update(DefenseManager defenseManager, GameMapView mapView) {
+    public void update(DefenseManager defenseManager, GameMapView mapView, AudioManager audioManager) {
         if (!active) return;
         this.gameMapView = mapView;
         if (!isDying) {
@@ -68,38 +69,16 @@ protected Direction currentDir;
                 calculatePath();
             if (currentPath != null && currentPathIndex < currentPath.size())
                 moveToNextNode(defenseManager);
-            else if (currentPath != null)
+            else if (currentPath != null){
                 reachTower();
+            }
+
             imageView.setX(x);
             imageView.setY(y);
             imageView.toFront();
         }
     }
 
-    public void update(DefenseManager defenseManager) {
-        update(defenseManager, null);
-    }
-    private boolean canMoveTo(double nextX, double nextY) {
-        double offsetX = (tileSize - hitboxWidth) / 2.0;
-        double offsetY = (tileSize - hitboxHeight) / 2.0;
-        double left = nextX + offsetX;
-        double right = nextX + offsetX + hitboxWidth - 1;
-        double top = nextY + offsetY;
-        double bottom = nextY + offsetY + hitboxHeight - 1;
-        int minCol = (int) (left / tileSize);
-        int maxCol = (int) (right / tileSize);
-        int minRow = (int) (top / tileSize);
-        int maxRow = (int) (bottom / tileSize);
-
-        for (int row = minRow; row <= maxRow; row++) {
-            for (int col = minCol; col <= maxCol; col++) {
-                if (!gameMap.isPassable(row, col)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 
     @Override
     public void render() {}

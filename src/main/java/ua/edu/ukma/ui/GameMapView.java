@@ -79,7 +79,7 @@ public class GameMapView extends Pane {
 
         this.selectedLevel = levelInfo;
         this.cardManager = new CardManager(selectedLevel.initialCards());
-
+        this.audioManager=new AudioManager();
         this.goldManager = new GoldManager(userProfile != null ? userProfile.getGold() : 0);
         this.defenseManager = new DefenseManager();
         this.defenseController = new DefenseController();
@@ -91,6 +91,7 @@ public class GameMapView extends Pane {
         this.waveManager.setOnVictory(() -> {
             pauseGame();
             VictoryWindow victoryWindow = new VictoryWindow();
+            audioManager.playSoundEffect("/audio/win.mp3");
             victoryWindow.show(onRestart, onMainMenu);
         });
         this.cardPane = new CardPane(defenseController, cardManager, manaManager, this, goldManager);
@@ -129,14 +130,14 @@ public class GameMapView extends Pane {
 
         setOnKeyPressed(event -> {
             Optional.ofNullable(controls.get(event.getCode())).ifPresent(direction -> {
-                player.move(direction);
+                player.move(direction, audioManager);
                 placementHighlighter.clear();
             });
             defenseController.handle(event.getCode());
 
             if (event.getCode() == KeyCode.ENTER) waveManager.startWaveEarly();
         });
-        this.audioManager=new AudioManager();
+
         audioManager.playBackgroundMusic("/audio/background.mp3");
         startGameLoop();
     }
@@ -161,6 +162,7 @@ public class GameMapView extends Pane {
             int rowDiff = Math.abs(gold.getTileY() - playerRow);
             int colDiff = Math.abs(gold.getTileX() - playerCol);
             if (rowDiff <= 1 && colDiff <= 1) {
+                audioManager.playSoundEffect("/audio/coin.mp3");
                 goldManager.addGold(gold.getGoldReward());
                 saveAccountGold();
                 this.getChildren().remove(gold);
@@ -218,9 +220,10 @@ public class GameMapView extends Pane {
                 player.update();
                 player.updateAnimation(now);
                 checkGold();
-                if (!enemyManager.update()) {
+                if (!enemyManager.update(audioManager)) {
                     pauseGame();
                     GameOverWindow gameOverWindow = new GameOverWindow();
+                    audioManager.playSoundEffect("/audio/lose.mp3");
                     gameOverWindow.show(onRestart, onMainMenu);
                 }
                 waveManager.update(0.010);

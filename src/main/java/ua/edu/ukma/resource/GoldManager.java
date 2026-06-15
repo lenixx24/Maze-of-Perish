@@ -12,6 +12,7 @@ public class GoldManager {
     }
 
     public void addGold(int amount) {
+
         if (amount > 0) {
             this.currentGold += amount;
         }

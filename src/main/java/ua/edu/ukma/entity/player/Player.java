@@ -5,6 +5,7 @@ import ua.edu.ukma.entity.Direction;
 import ua.edu.ukma.entity.Entity;
 import ua.edu.ukma.entity.SpriteSheet;
 import ua.edu.ukma.model.GameMap;
+import ua.edu.ukma.music.AudioManager;
 
 import java.util.List;
 
@@ -56,11 +57,11 @@ public class Player extends Entity {
         updateImageViewPosition();
     }
 
-    public void move(Direction direction) {
+    public void move(Direction direction, AudioManager audioManager) {
         if (moving || !active) {
             return;
         }
-
+       audioManager.playSoundEffect("/audio/swoosh.mp3");
         if (direction.isHorizontal()) {
             this.viewDirection = direction;
         }
