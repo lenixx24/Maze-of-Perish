@@ -13,6 +13,7 @@ import ua.edu.ukma.model.CellPosition;
 import ua.edu.ukma.model.CellType;
 import ua.edu.ukma.model.GameMap;
 import ua.edu.ukma.model.defense.DefenseManager;
+import ua.edu.ukma.music.AudioManager;
 import ua.edu.ukma.renderer.DefenseRenderer;
 import ua.edu.ukma.renderer.TileMapRenderer;
 import ua.edu.ukma.resource.CardManager;
@@ -46,6 +47,7 @@ public class GameMapView extends Pane {
     private final WaveManager waveManager;
     private CardPane cardPane;
     private AnimationTimer gameTimer;
+    private final AudioManager audioManager;
     private final List<Gold> activeGold = new ArrayList<>();
 
     private final Map<KeyCode, Direction> controls = Map.of(
@@ -134,7 +136,8 @@ public class GameMapView extends Pane {
 
             if (event.getCode() == KeyCode.ENTER) waveManager.startWaveEarly();
         });
-
+        this.audioManager=new AudioManager();
+        audioManager.playBackgroundMusic("/audio/background.mp3");
         startGameLoop();
     }
 
