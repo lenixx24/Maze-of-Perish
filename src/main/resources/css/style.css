@@ -76,6 +76,16 @@
 }
 
 .card-label.visible {}
+
+.top-panel {
+    -fx-background-color: rgba(53, 35, 27, 0.92);
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border-color: #4a3b32;
+    -fx-border-width: 0 3px 3px 3px;
+    -fx-effect: none;
+}
+
 .help-button {
     -fx-background-color: #ecc8ad;
     -fx-text-fill: #2c221b;

@@ -90,10 +90,6 @@ public class GameWindow {
         Pane gameArea = new Pane();
         gameArea.setStyle(toBackgroundStyle(BACKGROUND_COLOR));
 
-        Line topDivider = createHorizontalDivider(gameArea);
-        topDivider.setStartY(config.topPanelHeight());
-        topDivider.setEndY(config.topPanelHeight());
-
         Line bottomDivider = createHorizontalDivider(gameArea);
         bottomDivider.startYProperty().bind(gameArea.heightProperty().subtract(config.bottomPanelHeight()));
         bottomDivider.endYProperty().bind(gameArea.heightProperty().subtract(config.bottomPanelHeight()));
@@ -119,8 +115,13 @@ public class GameWindow {
         instWindow.setLayoutX(0);
         instWindow.setLayoutY(0);
 
-        TopPanelView topPanel = new TopPanelView(screenBounds.getWidth(), config.topPanelHeight(), instWindow);
-        topPanel.setLayoutX(0);
+        double mapPixelWidth = gameMap.cols() * tileSize;
+        double topPanelWidth = Math.min(mapPixelWidth - 320, 1100);
+        topPanelWidth = Math.max(820, topPanelWidth);
+        topPanelWidth = Math.min(topPanelWidth, mapPixelWidth);
+
+        TopPanelView topPanel = new TopPanelView(topPanelWidth, config.topPanelHeight(), instWindow);
+        topPanel.layoutXProperty().bind(gameArea.widthProperty().subtract(topPanel.prefWidthProperty()).divide(2));
         topPanel.setLayoutY(0);
 
         GameMapView mapView = new GameMapView(gameMap, tileSize, topPanel, userProfile, userStorage, onRestart, onMainMenu, selectedLevel);
@@ -153,7 +154,7 @@ public class GameWindow {
         cardPane.layoutYProperty().bind(gameArea.heightProperty().subtract(config.bottomPanelHeight()));
         mapView.setCardPane(cardPane);
 
-        gameArea.getChildren().addAll(mapView, topDivider, bottomDivider, topPanel, cardPane, instWindow);
+        gameArea.getChildren().addAll(mapView, bottomDivider, topPanel, cardPane, instWindow);
         return gameArea;
     }
 

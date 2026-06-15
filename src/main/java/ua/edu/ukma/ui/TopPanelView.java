@@ -1,5 +1,6 @@
 package ua.edu.ukma.ui;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -7,7 +8,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -31,16 +31,19 @@ public class TopPanelView extends HBox {
     public TopPanelView(double width, double height, InstWindow instWindow) {
         this.instWindow = instWindow;
 
-        setPrefSize(width, height);
-        setAlignment(Pos.CENTER_LEFT);
-        this.setPadding(new javafx.geometry.Insets(0, 20, 0, 100));
-        this.getStyleClass().add("top-panel");
-        Font.loadFont(getClass().getResourceAsStream("/font/jersey10.ttf"), 16);
+        double panelWidth = width;
+        double panelHeight = height;
 
-        Region leftSpacer = new Region();
-        HBox.setHgrow(leftSpacer, Priority.ALWAYS);
-        Region rightSpacer = new Region();
-        HBox.setHgrow(rightSpacer, Priority.ALWAYS);
+        setPrefSize(panelWidth, panelHeight);
+        setMinSize(panelWidth, panelHeight);
+        setMaxSize(panelWidth, panelHeight);
+
+        setAlignment(Pos.CENTER);
+        setSpacing(24);
+        setPadding(new Insets(0, 34, 0, 34));
+        getStyleClass().add("top-panel");
+
+        Font.loadFont(getClass().getResourceAsStream("/font/jersey10.ttf"), 16);
 
         fullHeartImg = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/interface/heart.png")));
         emptyHeartImg = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/interface/empty-heart.png")));
@@ -54,12 +57,18 @@ public class TopPanelView extends HBox {
             heartView.setFitHeight(32);
             heartsContainer.getChildren().add(heartView);
         }
-        waveLabel = createStyledLabel("Wave: 1");
-        setAlignment(Pos.CENTER);
-        setSpacing(17);
+
+        waveLabel = createStyledLabel("Wave: 1/5");
+
         timerLabel = createStyledLabel("Preparation: 0.0с");
-        timerLabel.setPrefWidth(220);
+        timerLabel.setPrefWidth(245);
+        timerLabel.setMinWidth(245);
+        timerLabel.setMaxWidth(245);
         timerLabel.setAlignment(Pos.CENTER_LEFT);
+
+        HBox centerSection = new HBox(22, waveLabel, timerLabel);
+        centerSection.setAlignment(Pos.CENTER);
+        HBox.setHgrow(centerSection, Priority.ALWAYS);
 
         helpButton = new Button("!");
         helpButton.getStyleClass().add("help-button");
@@ -83,7 +92,10 @@ public class TopPanelView extends HBox {
                 this.mapView.toggleSound();
             }
         });
-        getChildren().addAll(heartsContainer, leftSpacer, waveLabel, timerLabel, rightSpacer, helpButton, muteButton);
+
+        HBox rightSection = new HBox(14, helpButton, muteButton);
+        rightSection.setAlignment(Pos.CENTER_RIGHT);
+        getChildren().addAll(heartsContainer, centerSection, rightSection);
     }
 
     private Label createStyledLabel(String defaultText) {
@@ -106,9 +118,11 @@ public class TopPanelView extends HBox {
         if (waveManager.isPreparationPhase()) {
             timerLabel.setText(String.format("Preparation: %.1fс", waveManager.getPrepTimer()));
             timerLabel.setTextFill(Color.YELLOW);
+            timerLabel.setAlignment(Pos.CENTER_LEFT);
         } else {
             timerLabel.setText("Attack!");
             timerLabel.setTextFill(Color.web("#ff4444"));
+            timerLabel.setAlignment(Pos.CENTER);
         }
     }
     public void updateMuteIcon(boolean isMuted) {
